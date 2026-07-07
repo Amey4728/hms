@@ -12,7 +12,7 @@ export interface PaginationMeta {
   hasPreviousPage: boolean;
 }
 
-export interface ApiResponse<TData = unknown, TMeta = Record<string, unknown>> {
+export interface ApiResponse<TData = unknown, TMeta = unknown> {
   success: true;
   message: string;
   data: TData;

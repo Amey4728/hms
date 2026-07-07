@@ -1,0 +1,31 @@
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { AppLayout } from '@/components/layout/AppLayout';
+import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
+import { PlaceholderPage } from '@/components/PlaceholderPage';
+import { LoginPage } from '@/features/auth/LoginPage';
+import { DashboardPage } from '@/features/dashboard/DashboardPage';
+import { PatientsListPage } from '@/features/patients/PatientsListPage';
+import { PatientRegisterPage } from '@/features/patients/PatientRegisterPage';
+import { PatientProfilePage } from '@/features/patients/PatientProfilePage';
+
+export const router = createBrowserRouter([
+  { path: '/login', element: <LoginPage /> },
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { index: true, element: <DashboardPage /> },
+          { path: 'patients', element: <PatientsListPage /> },
+          { path: 'patients/new', element: <PatientRegisterPage /> },
+          { path: 'patients/:id', element: <PatientProfilePage /> },
+          { path: 'appointments', element: <PlaceholderPage title="Appointments" phase="Phase 4" /> },
+          { path: 'hospitals', element: <PlaceholderPage title="Hospitals" phase="a later phase" /> },
+          { path: 'users', element: <PlaceholderPage title="Users" phase="a later phase" /> },
+        ],
+      },
+    ],
+  },
+  { path: '*', element: <Navigate to="/" replace /> },
+]);

@@ -28,6 +28,51 @@ enum DepartmentType {
   ADMINISTRATIVE
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  UNKNOWN
+}
+
+enum BloodGroup {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+  OTHER
+}
+
+enum PatientStatus {
+  ACTIVE
+  INACTIVE
+  DECEASED
+}
+
+enum AllergySeverity {
+  MILD
+  MODERATE
+  SEVERE
+  LIFE_THREATENING
+}
+
+enum MedicalConditionStatus {
+  ACTIVE
+  RESOLVED
+  CHRONIC
+}
+
 // ── Identity & Access ────────────────────────────────────────────────────
 
 model User {
@@ -53,6 +98,9 @@ model User {
 
   // RBAC
   userRoles UserRole[]
+
+  // Optional patient portal account link (one-to-one)
+  patient Patient? @relation("PatientAccount")
 
   // Security trails
   refreshTokens  RefreshToken[]
@@ -220,6 +268,7 @@ model Hospital {
   branches    Branch[]
   departments Department[]
   users       User[]
+  patients    Patient[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -250,6 +299,7 @@ model Branch {
 
   departments Department[]
   users       User[]
+  patients    Patient[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -289,4 +339,127 @@ model Department {
   @@index([branchId])
   @@index([deletedAt])
   @@map("departments")
+}
+
+// ── Clinical: patients & profile ─────────────────────────────────────────
+
+model Patient {
+  id            String @id @default(uuid()) @db.Uuid
+  patientNumber Int    @unique @default(autoincrement()) // drives the human-readable MRN
+
+  firstName     String
+  lastName      String
+  middleName    String?
+  dateOfBirth   DateTime       @db.Date
+  gender        Gender
+  bloodGroup    BloodGroup?
+  maritalStatus MaritalStatus?
+
+  email      String?
+  phone      String
+  nationalId String?
+
+  addressLine String?
+  city        String?
+  state       String?
+  country     String?
+  postalCode  String?
+
+  status PatientStatus @default(ACTIVE)
+
+  // Optional organisational scoping + portal account
+  hospitalId String?   @db.Uuid
+  branchId   String?   @db.Uuid
+  userId     String?   @unique @db.Uuid
+  hospital   Hospital? @relation(fields: [hospitalId], references: [id], onDelete: SetNull)
+  branch     Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  user       User?     @relation("PatientAccount", fields: [userId], references: [id], onDelete: SetNull)
+
+  emergencyContacts EmergencyContact[]
+  allergies         Allergy[]
+  medicalHistories  MedicalHistory[]
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([lastName])
+  @@index([phone])
+  @@index([hospitalId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("patients")
+}
+
+model EmergencyContact {
+  id        String  @id @default(uuid()) @db.Uuid
+  patientId String  @db.Uuid
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  name         String
+  relationship String
+  phone        String
+  email        String?
+  addressLine  String?
+  isPrimary    Boolean @default(false)
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([patientId])
+  @@index([deletedAt])
+  @@map("emergency_contacts")
+}
+
+model Allergy {
+  id        String  @id @default(uuid()) @db.Uuid
+  patientId String  @db.Uuid
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  allergen String
+  reaction String?
+  severity AllergySeverity @default(MILD)
+  notes    String?
+
+  recordedBy String?   @db.Uuid
+  version    Int       @default(1)
+  createdBy  String?   @db.Uuid
+  updatedBy  String?   @db.Uuid
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  @@index([patientId])
+  @@index([deletedAt])
+  @@map("allergies")
+}
+
+model MedicalHistory {
+  id        String  @id @default(uuid()) @db.Uuid
+  patientId String  @db.Uuid
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  condition   String
+  notes       String?
+  diagnosedAt DateTime?               @db.Date
+  status      MedicalConditionStatus @default(ACTIVE)
+
+  recordedBy String?   @db.Uuid
+  version    Int       @default(1)
+  createdBy  String?   @db.Uuid
+  updatedBy  String?   @db.Uuid
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  @@index([patientId])
+  @@index([deletedAt])
+  @@map("medical_histories")
 }
