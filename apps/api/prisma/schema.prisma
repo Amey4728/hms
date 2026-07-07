@@ -1,0 +1,292 @@
+// ─────────────────────────────────────────────────────────────────────────
+// HMS — Prisma schema (Phase 1: core, auth, RBAC, organisation)
+// UUID PKs · timestamps · soft delete · audit columns · optimistic locking
+// ─────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ────────────────────────────────────────────────────────────────
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING
+}
+
+enum DepartmentType {
+  CLINICAL
+  DIAGNOSTIC
+  SUPPORT
+  ADMINISTRATIVE
+}
+
+// ── Identity & Access ────────────────────────────────────────────────────
+
+model User {
+  id           String     @id @default(uuid()) @db.Uuid
+  email        String     @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  phone        String?
+  status       UserStatus @default(ACTIVE)
+
+  // Optional organisational scoping
+  hospitalId String? @db.Uuid
+  branchId   String? @db.Uuid
+  hospital   Hospital? @relation(fields: [hospitalId], references: [id], onDelete: SetNull)
+  branch     Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  // Security / lifecycle
+  emailVerifiedAt     DateTime?
+  lastLoginAt         DateTime?
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+
+  // RBAC
+  userRoles UserRole[]
+
+  // Security trails
+  refreshTokens  RefreshToken[]
+  loginHistories LoginHistory[]
+  auditLogs      AuditLog[]     @relation("AuditActor")
+
+  // Audit columns + optimistic lock + soft delete
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([hospitalId])
+  @@index([branchId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model Role {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique // e.g. SUPER_ADMIN
+  displayName String
+  description String?
+  isSystem    Boolean @default(false)
+
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+
+  version   Int       @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([deletedAt])
+  @@map("roles")
+}
+
+model Permission {
+  id          String  @id @default(uuid()) @db.Uuid
+  action      String  @unique // e.g. patient.create
+  resource    String // e.g. patient
+  description String?
+
+  rolePermissions RolePermission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([resource])
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String @db.Uuid
+  permissionId String @db.Uuid
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  assignedAt DateTime @default(now())
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  userId String @db.Uuid
+  roleId String @db.Uuid
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  assignedBy String?  @db.Uuid
+  assignedAt DateTime @default(now())
+
+  @@id([userId, roleId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+// ── Security trails ──────────────────────────────────────────────────────
+
+model RefreshToken {
+  id        String @id @default(uuid()) @db.Uuid
+  userId    String @db.Uuid
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String   @unique // sha256 of the opaque token
+  family    String   @db.Uuid // rotation family for reuse detection
+  expiresAt DateTime
+  revokedAt DateTime?
+  replacedByTokenId String? @db.Uuid
+
+  userAgent String?
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([family])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model LoginHistory {
+  id        String  @id @default(uuid()) @db.Uuid
+  userId    String? @db.Uuid
+  user      User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  email     String
+  success   Boolean
+  reason    String?
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([email])
+  @@index([createdAt])
+  @@map("login_histories")
+}
+
+model AuditLog {
+  id       String  @id @default(uuid()) @db.Uuid
+  actorId  String? @db.Uuid
+  actor    User?   @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  action     String // e.g. user.update
+  entityType String // e.g. User
+  entityId   String?
+  oldValues  Json?
+  newValues  Json?
+  ipAddress  String?
+  userAgent  String?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ── Organisation ─────────────────────────────────────────────────────────
+
+model Hospital {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String
+  code          String  @unique
+  licenseNumber String?
+  email         String?
+  phone         String?
+  addressLine   String?
+  city          String?
+  state         String?
+  country       String?
+  postalCode    String?
+  isActive      Boolean @default(true)
+
+  branches    Branch[]
+  departments Department[]
+  users       User[]
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([deletedAt])
+  @@map("hospitals")
+}
+
+model Branch {
+  id         String @id @default(uuid()) @db.Uuid
+  hospitalId String @db.Uuid
+  hospital   Hospital @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+
+  name        String
+  code        String
+  email       String?
+  phone       String?
+  addressLine String?
+  city        String?
+  state       String?
+  country     String?
+  postalCode  String?
+  isActive    Boolean @default(true)
+
+  departments Department[]
+  users       User[]
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([hospitalId, code])
+  @@index([hospitalId])
+  @@index([deletedAt])
+  @@map("branches")
+}
+
+model Department {
+  id         String  @db.Uuid @id @default(uuid())
+  hospitalId String  @db.Uuid
+  branchId   String? @db.Uuid
+  hospital   Hospital @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  branch     Branch?  @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  name        String
+  code        String
+  type        DepartmentType @default(CLINICAL)
+  description String?
+  isActive    Boolean @default(true)
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([hospitalId, code])
+  @@index([hospitalId])
+  @@index([branchId])
+  @@index([deletedAt])
+  @@map("departments")
+}
