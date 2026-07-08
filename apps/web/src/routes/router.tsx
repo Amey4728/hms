@@ -22,6 +22,9 @@ import { PayrollPage } from '@/features/hr/PayrollPage';
 import { ItemsPage } from '@/features/procurement/ItemsPage';
 import { VendorsPage } from '@/features/procurement/VendorsPage';
 import { PurchaseRequestsPage } from '@/features/procurement/PurchaseRequestsPage';
+import { HospitalsPage } from '@/features/organization/HospitalsPage';
+import { BranchesPage } from '@/features/organization/BranchesPage';
+import { DepartmentsPage } from '@/features/organization/DepartmentsPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { UsersListPage } from '@/features/users/UsersListPage';
 import { PatientsListPage } from '@/features/patients/PatientsListPage';
@@ -59,7 +62,9 @@ export const router = createBrowserRouter([
           { path: 'inventory', element: <ItemsPage /> },
           { path: 'inventory/vendors', element: <VendorsPage /> },
           { path: 'inventory/purchase-requests', element: <PurchaseRequestsPage /> },
-          { path: 'hospitals', element: <PlaceholderPage title="Hospitals" phase="a later phase" /> },
+          { path: 'hospitals', element: <HospitalsPage /> },
+          { path: 'hospitals/branches', element: <BranchesPage /> },
+          { path: 'hospitals/departments', element: <DepartmentsPage /> },
           { path: 'users', element: <UsersListPage /> },
         ],
       },
