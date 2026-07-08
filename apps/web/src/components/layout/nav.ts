@@ -10,6 +10,7 @@ import {
   Receipt,
   ScanLine,
   ShieldCheck,
+  Stethoscope,
   Users,
   UserRound,
   type LucideIcon,
@@ -27,6 +28,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', to: '/', icon: LayoutDashboard, anyOf: [] },
   { label: 'Patients', to: '/patients', icon: UserRound, anyOf: [PERMISSIONS.PATIENT_READ] },
+  { label: 'Visits', to: '/visits', icon: Stethoscope, anyOf: [PERMISSIONS.PATIENT_READ] },
   {
     label: 'Appointments',
     to: '/appointments',

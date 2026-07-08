@@ -25,6 +25,8 @@ import { PurchaseRequestsPage } from '@/features/procurement/PurchaseRequestsPag
 import { HospitalsPage } from '@/features/organization/HospitalsPage';
 import { BranchesPage } from '@/features/organization/BranchesPage';
 import { DepartmentsPage } from '@/features/organization/DepartmentsPage';
+import { VisitsPage } from '@/features/clinical/VisitsPage';
+import { VisitDetailPage } from '@/features/clinical/VisitDetailPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { UsersListPage } from '@/features/users/UsersListPage';
 import { PatientsListPage } from '@/features/patients/PatientsListPage';
@@ -43,6 +45,8 @@ export const router = createBrowserRouter([
           { path: 'patients', element: <PatientsListPage /> },
           { path: 'patients/new', element: <PatientRegisterPage /> },
           { path: 'patients/:id', element: <PatientProfilePage /> },
+          { path: 'visits', element: <VisitsPage /> },
+          { path: 'visits/:id', element: <VisitDetailPage /> },
           { path: 'appointments', element: <AppointmentsListPage /> },
           { path: 'appointments/queue', element: <QueueBoardPage /> },
           { path: 'laboratory', element: <LabOrdersPage /> },
