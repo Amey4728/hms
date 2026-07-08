@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { FileDown } from 'lucide-react';
 import { PAYMENT_METHODS, PERMISSIONS } from '@hms/shared';
 import { Modal } from '@/components/Modal';
 import { PermissionGate } from '@/components/PermissionGate';
 import { Badge, Button, Input, Select } from '@/components/ui';
 import { toast } from '@/components/toast';
-import { ApiError } from '@/lib/api-client';
+import { apiClient, ApiError } from '@/lib/api-client';
 import { titleCase } from '@/lib/format';
 import { useCancelInvoice, usePayInvoice, useRefundInvoice } from './hooks';
 import type { Invoice } from './api';
@@ -53,7 +54,12 @@ export function InvoiceDetailModal({ invoice, onClose }: { invoice: Invoice | nu
             <p className="font-medium text-slate-900">{invoice.patientName}</p>
             <p className="text-xs text-slate-400">{invoice.patientMrn}</p>
           </div>
-          <Badge tone={STATUS_TONE[invoice.status]}>{titleCase(invoice.status)}</Badge>
+          <div className="flex items-center gap-2">
+            <Badge tone={STATUS_TONE[invoice.status]}>{titleCase(invoice.status)}</Badge>
+            <Button variant="secondary" className="px-2 py-1 text-xs" onClick={() => apiClient.openBlob(`/billing/invoices/${invoice.id}/pdf`).catch(onError)}>
+              <FileDown className="h-4 w-4" /> PDF
+            </Button>
+          </div>
         </div>
 
         <div className="rounded-lg border border-slate-200">

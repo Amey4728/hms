@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { FlaskConical, Plus } from 'lucide-react';
+import { FileDown, FlaskConical, Plus } from 'lucide-react';
 import { LAB_ORDER_STATUSES, PERMISSIONS } from '@hms/shared';
 import { PageHeader } from '@/components/PageHeader';
 import { PermissionGate } from '@/components/PermissionGate';
 import { Badge, Button, Card, PageSpinner, Select } from '@/components/ui';
 import { toast } from '@/components/toast';
-import { ApiError } from '@/lib/api-client';
+import { apiClient, ApiError } from '@/lib/api-client';
 import { titleCase } from '@/lib/format';
 import { CreateLabOrderModal } from './CreateLabOrderModal';
 import { LabSubnav } from './LabSubnav';
@@ -136,9 +136,18 @@ export function LabOrdersPage() {
                           )}
                         </PermissionGate>
                         {o.status === 'COMPLETED' && (
-                          <Button variant="secondary" className="px-2 py-1 text-xs" onClick={() => setReportId(o.id)}>
-                            Report
-                          </Button>
+                          <>
+                            <Button variant="secondary" className="px-2 py-1 text-xs" onClick={() => setReportId(o.id)}>
+                              Report
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              className="px-2 py-1 text-xs"
+                              onClick={() => apiClient.openBlob(`/lab/orders/${o.id}/report.pdf`).catch(onError)}
+                            >
+                              <FileDown className="h-4 w-4" /> PDF
+                            </Button>
+                          </>
                         )}
                       </div>
                     </td>

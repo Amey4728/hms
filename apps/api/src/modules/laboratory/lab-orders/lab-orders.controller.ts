@@ -9,12 +9,16 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { PERMISSIONS } from '@hms/shared';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
 import { ResponseMessage } from '../../../common/decorators/response-message.decorator';
+import { PdfService } from '../../../common/pdf/pdf.service';
+import { sendPdf } from '../../../common/pdf/pdf.util';
 import {
   CancelLabOrderDto,
   CreateLabOrderDto,
@@ -28,7 +32,10 @@ import { LabOrdersService } from './lab-orders.service';
 @ApiBearerAuth()
 @Controller('lab/orders')
 export class LabOrdersController {
-  constructor(private readonly service: LabOrdersService) {}
+  constructor(
+    private readonly service: LabOrdersService,
+    private readonly pdf: PdfService,
+  ) {}
 
   @Post()
   @Permissions(PERMISSIONS.LAB_RESULT_CREATE)
@@ -59,6 +66,14 @@ export class LabOrdersController {
   @ApiOperation({ summary: 'Structured report for a COMPLETED order' })
   report(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.service.report(id);
+  }
+
+  @Get(':id/report.pdf')
+  @Permissions(PERMISSIONS.LAB_RESULT_READ)
+  @ApiOperation({ summary: 'Download the lab report as a PDF' })
+  async reportPdf(@Param('id', new ParseUUIDPipe()) id: string, @Res() res: Response) {
+    const order = await this.service.findById(id);
+    sendPdf(res, `${order.orderRef}-lab-report.pdf`, await this.pdf.labReport(order));
   }
 
   @Patch(':id/collect-sample')

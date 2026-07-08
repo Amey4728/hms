@@ -9,8 +9,10 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import {
@@ -26,6 +28,8 @@ import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
 import { ResponseMessage } from '../../../common/decorators/response-message.decorator';
 import { paginationQuerySchema } from '../../../common/dto/pagination.dto';
+import { PdfService } from '../../../common/pdf/pdf.service';
+import { sendPdf } from '../../../common/pdf/pdf.util';
 import { StudiesService } from './studies.service';
 
 class CreateStudyDto extends createZodDto(createStudySchema) {}
@@ -44,7 +48,10 @@ class StudyQueryDto extends createZodDto(
 @ApiBearerAuth()
 @Controller('radiology/studies')
 export class StudiesController {
-  constructor(private readonly service: StudiesService) {}
+  constructor(
+    private readonly service: StudiesService,
+    private readonly pdf: PdfService,
+  ) {}
 
   @Post()
   @Permissions(PERMISSIONS.RADIOLOGY_MANAGE)
@@ -66,6 +73,14 @@ export class StudiesController {
   @ResponseMessage('Study retrieved successfully')
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.service.findById(id);
+  }
+
+  @Get(':id/report.pdf')
+  @Permissions(PERMISSIONS.RADIOLOGY_MANAGE)
+  @ApiOperation({ summary: 'Download the radiology report as a PDF' })
+  async reportPdf(@Param('id', new ParseUUIDPipe()) id: string, @Res() res: Response) {
+    const study = await this.service.findById(id);
+    sendPdf(res, `${study.studyRef}-radiology-report.pdf`, await this.pdf.radiologyReport(study));
   }
 
   @Patch(':id/schedule')

@@ -21,8 +21,12 @@ export class TransformInterceptor<T> implements NestInterceptor<T, ApiResponse> 
         context.getClass(),
       ]) ?? 'Success';
 
+    const response = context.switchToHttp().getResponse<{ headersSent?: boolean }>();
+
     return next.handle().pipe(
       map((payload): ApiResponse => {
+        // Raw/binary responses (e.g. streamed PDFs via @Res) are already sent — don't wrap.
+        if (response?.headersSent) return payload as unknown as ApiResponse;
         if (payload instanceof PaginatedResult) {
           return { success: true, message, data: payload.items, meta: payload.meta };
         }

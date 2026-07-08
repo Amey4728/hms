@@ -11,6 +11,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { PermissionsGuard } from './common/guards/permissions.guard';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { PdfModule } from './common/pdf/pdf.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -51,6 +52,7 @@ import { UsersModule } from './modules/users/users.module';
       }),
     }),
     PrismaModule,
+    PdfModule,
     AuthModule,
     UsersModule,
     RbacModule,

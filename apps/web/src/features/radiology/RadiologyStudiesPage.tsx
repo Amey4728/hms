@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, ScanLine } from 'lucide-react';
+import { FileDown, Plus, ScanLine } from 'lucide-react';
 import { RADIOLOGY_STATUSES, PERMISSIONS } from '@hms/shared';
 import { PageHeader } from '@/components/PageHeader';
 import { PermissionGate } from '@/components/PermissionGate';
@@ -7,7 +7,7 @@ import { Modal } from '@/components/Modal';
 import { PatientPicker } from '@/components/PatientPicker';
 import { Badge, Button, Card, Field, Input, PageSpinner, Select } from '@/components/ui';
 import { toast } from '@/components/toast';
-import { ApiError } from '@/lib/api-client';
+import { apiClient, ApiError } from '@/lib/api-client';
 import { titleCase } from '@/lib/format';
 import { useHospitals } from '@/features/lookups';
 import { RadiologySubnav } from './RadiologySubnav';
@@ -41,6 +41,7 @@ export function RadiologyStudiesPage() {
   useEffect(() => { if (reportFor) setReport({ findings: '', impression: '', imageUrl: '' }); }, [reportFor]);
 
   const onError = (e: unknown) => toast.error(e instanceof ApiError ? e.message : 'Action failed');
+  const openPdf = (studyId: string) => apiClient.openBlob(`/radiology/studies/${studyId}/report.pdf`).catch(onError);
 
   const submitStudy = () => create.mutate({ hospitalId, patientId, examId }, {
     onSuccess: (s) => { toast.success(`Study ${s.studyRef} requested`); setCreateOpen(false); },
@@ -102,6 +103,7 @@ export function RadiologyStudiesPage() {
                           )}
                         </PermissionGate>
                         {s.status === 'REPORTED' && <Button variant="secondary" className="px-2 py-1 text-xs" onClick={() => setViewFor(s)}>View report</Button>}
+                        {s.status === 'REPORTED' && <Button variant="ghost" className="px-2 py-1 text-xs" onClick={() => openPdf(s.id)}><FileDown className="h-4 w-4" /> PDF</Button>}
                       </div>
                     </td>
                   </tr>

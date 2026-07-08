@@ -9,12 +9,16 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { PERMISSIONS } from '@hms/shared';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Permissions } from '../../common/decorators/permissions.decorator';
 import { ResponseMessage } from '../../common/decorators/response-message.decorator';
+import { PdfService } from '../../common/pdf/pdf.service';
+import { sendPdf } from '../../common/pdf/pdf.util';
 import {
   CancelInvoiceDto,
   CreateInvoiceDto,
@@ -28,7 +32,10 @@ import { InvoicesService } from './invoices.service';
 @ApiBearerAuth()
 @Controller('billing/invoices')
 export class InvoicesController {
-  constructor(private readonly service: InvoicesService) {}
+  constructor(
+    private readonly service: InvoicesService,
+    private readonly pdf: PdfService,
+  ) {}
 
   @Post()
   @Permissions(PERMISSIONS.BILLING_GENERATE)
@@ -51,6 +58,14 @@ export class InvoicesController {
   @ResponseMessage('Invoice retrieved successfully')
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.service.findById(id);
+  }
+
+  @Get(':id/pdf')
+  @Permissions(PERMISSIONS.BILLING_READ)
+  @ApiOperation({ summary: 'Download the invoice as a PDF' })
+  async downloadPdf(@Param('id', new ParseUUIDPipe()) id: string, @Res() res: Response) {
+    const invoice = await this.service.findById(id);
+    sendPdf(res, `${invoice.invoiceRef}.pdf`, await this.pdf.invoice(invoice));
   }
 
   @Post(':id/payments')

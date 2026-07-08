@@ -131,6 +131,23 @@ class ApiClient {
   del<T>(path: string) {
     return this.request<T>(path, { method: 'DELETE' });
   }
+
+  /** Fetches a binary endpoint (with the auth header + one refresh retry) and opens it in a new tab. */
+  async openBlob(path: string): Promise<void> {
+    let response = await this.rawFetch(path, { method: 'GET' });
+    if (response.status === 401) {
+      const token = await this.refreshOnce();
+      if (token) response = await this.rawFetch(path, { method: 'GET' });
+    }
+    if (!response.ok) {
+      const text = await response.text();
+      const json = text ? (JSON.parse(text) as ApiErrorResponse) : null;
+      throw new ApiError(json?.message ?? response.statusText, response.status, json?.error?.code ?? 'UNKNOWN');
+    }
+    const url = URL.createObjectURL(await response.blob());
+    window.open(url, '_blank', 'noopener');
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  }
 }
 
 export const apiClient = new ApiClient();
