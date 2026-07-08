@@ -167,6 +167,28 @@ enum ClaimStatus {
   SETTLED
 }
 
+enum VisitType {
+  OPD
+  IPD
+  EMERGENCY
+}
+
+enum VisitStatus {
+  OPEN
+  CLOSED
+}
+
+enum DiagnosisType {
+  PROVISIONAL
+  FINAL
+}
+
+enum TreatmentPlanStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
 // ── Identity & Access ────────────────────────────────────────────────────
 
 model User {
@@ -499,6 +521,9 @@ model Patient {
   invoices          Invoice[]
   radiologyStudies  RadiologyStudy[]
   insuranceClaims   InsuranceClaim[]
+  visits            Visit[]
+  prescriptions     Prescription[]
+  treatmentPlans    TreatmentPlan[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -1051,4 +1076,133 @@ model InsuranceClaim {
   @@index([status])
   @@index([deletedAt])
   @@map("insurance_claims")
+}
+
+// ── Clinical encounters ──────────────────────────────────────────────────
+
+model Visit {
+  id          String @id @default(uuid()) @db.Uuid
+  visitNumber Int    @unique @default(autoincrement())
+
+  patientId     String  @db.Uuid
+  patient       Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorId      String? @db.Uuid
+  appointmentId String? @db.Uuid
+  hospitalId    String? @db.Uuid
+
+  visitType      VisitType   @default(OPD)
+  status         VisitStatus @default(OPEN)
+  chiefComplaint String?
+  notes          String?
+  vitals         Json?
+  visitDate      DateTime    @default(now())
+  closedAt       DateTime?
+
+  diagnoses      Diagnosis[]
+  prescriptions  Prescription[]
+  treatmentPlans TreatmentPlan[]
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([patientId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("visits")
+}
+
+model Diagnosis {
+  id        String  @id @default(uuid()) @db.Uuid
+  visitId   String  @db.Uuid
+  visit     Visit   @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  patientId String  @db.Uuid
+
+  code         String?
+  description  String
+  type         DiagnosisType @default(PROVISIONAL)
+  notes        String?
+  recordedById String?       @db.Uuid
+
+  version   Int       @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([visitId])
+  @@index([patientId])
+  @@map("diagnoses")
+}
+
+model Prescription {
+  id                 String @id @default(uuid()) @db.Uuid
+  prescriptionNumber Int    @unique @default(autoincrement())
+
+  patientId String  @db.Uuid
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  visitId   String? @db.Uuid
+  visit     Visit?  @relation(fields: [visitId], references: [id], onDelete: SetNull)
+  doctorId  String? @db.Uuid
+
+  notes String?
+
+  items PrescriptionItem[]
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([patientId])
+  @@index([visitId])
+  @@index([deletedAt])
+  @@map("prescriptions")
+}
+
+model PrescriptionItem {
+  id             String       @id @default(uuid()) @db.Uuid
+  prescriptionId String       @db.Uuid
+  prescription   Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+
+  medicineId   String? @db.Uuid
+  drugName     String
+  dosage       String
+  frequency    String
+  duration     String
+  instructions String?
+
+  createdAt DateTime @default(now())
+
+  @@index([prescriptionId])
+  @@map("prescription_items")
+}
+
+model TreatmentPlan {
+  id        String  @id @default(uuid()) @db.Uuid
+  patientId String  @db.Uuid
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  visitId   String? @db.Uuid
+  visit     Visit?  @relation(fields: [visitId], references: [id], onDelete: SetNull)
+
+  title       String
+  description String?
+  status      TreatmentPlanStatus @default(ACTIVE)
+  startDate   DateTime?           @db.Date
+  endDate     DateTime?           @db.Date
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([patientId])
+  @@index([deletedAt])
+  @@map("treatment_plans")
 }

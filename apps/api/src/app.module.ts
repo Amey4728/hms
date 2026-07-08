@@ -17,6 +17,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { BillingModule } from './modules/billing/billing.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
+import { EncountersModule } from './modules/encounters/encounters.module';
 import { HealthModule } from './modules/health/health.module';
 import { HospitalsModule } from './modules/hospitals/hospitals.module';
 import { InsuranceModule } from './modules/insurance/insurance.module';
@@ -61,6 +62,7 @@ import { UsersModule } from './modules/users/users.module';
     BillingModule,
     RadiologyModule,
     InsuranceModule,
+    EncountersModule,
     ReportsModule,
     HealthModule,
   ],
