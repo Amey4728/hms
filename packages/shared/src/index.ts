@@ -11,3 +11,4 @@ export * from './billing';
 export * from './radiology';
 export * from './insurance';
 export * from './encounters';
+export * from './hr';
