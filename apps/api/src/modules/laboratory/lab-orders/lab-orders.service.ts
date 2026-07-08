@@ -1,4 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import type { LabOrderStatus } from '@prisma/client';
 import type { CancelLabOrderInput, CreateLabOrderInput, EnterResultInput } from '@hms/shared';
 import { PaginatedResult } from '../../../common/dto/paginated-result';
@@ -66,7 +71,9 @@ export class LabOrdersService {
   }
 
   collectSample(id: string, version: number, userId: string) {
-    return this.transition(id, version, 'SAMPLE_COLLECTED', userId, { sampleCollectedAt: new Date() });
+    return this.transition(id, version, 'SAMPLE_COLLECTED', userId, {
+      sampleCollectedAt: new Date(),
+    });
   }
 
   startProcessing(id: string, version: number, userId: string) {
@@ -128,7 +135,11 @@ export class LabOrdersService {
     assertUpdatable(current, version, 'Lab order');
     assertLabTransition(current.status, to);
 
-    const count = await this.repo.updateGuarded(id, version, { status: to, updatedBy: userId, ...extra });
+    const count = await this.repo.updateGuarded(id, version, {
+      status: to,
+      updatedBy: userId,
+      ...extra,
+    });
     assertWritten(count, 'Lab order');
     return this.findById(id);
   }

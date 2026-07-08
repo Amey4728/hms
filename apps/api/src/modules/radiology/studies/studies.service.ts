@@ -34,9 +34,12 @@ export class StudiesService {
   ) {}
 
   async create(input: CreateStudyInput, userId: string) {
-    if (!(await this.patients.existsActive(input.patientId))) throw new NotFoundException('Patient not found');
-    if (!(await this.hospitals.findActiveById(input.hospitalId))) throw new NotFoundException('Hospital not found');
-    if (!(await this.exams.findActiveById(input.examId))) throw new NotFoundException('Exam not found');
+    if (!(await this.patients.existsActive(input.patientId)))
+      throw new NotFoundException('Patient not found');
+    if (!(await this.hospitals.findActiveById(input.hospitalId)))
+      throw new NotFoundException('Hospital not found');
+    if (!(await this.exams.findActiveById(input.examId)))
+      throw new NotFoundException('Exam not found');
     const study = await this.repo.create({
       patientId: input.patientId,
       hospitalId: input.hospitalId,
@@ -57,13 +60,19 @@ export class StudiesService {
   async list(query: StudyQuery) {
     const { skip, take } = toPrismaPagination(query);
     const { items, total } = await this.repo.findManyPaginated({
-      skip, take, patientId: query.patientId, status: query.status, sortOrder: query.sortOrder,
+      skip,
+      take,
+      patientId: query.patientId,
+      status: query.status,
+      sortOrder: query.sortOrder,
     });
     return PaginatedResult.from(items.map(toStudyView), total, query.page, query.limit);
   }
 
   schedule(id: string, input: ScheduleStudyInput, userId: string) {
-    return this.transition(id, input.version, 'SCHEDULED', userId, { scheduledAt: input.scheduledAt });
+    return this.transition(id, input.version, 'SCHEDULED', userId, {
+      scheduledAt: input.scheduledAt,
+    });
   }
 
   perform(id: string, version: number, userId: string) {
@@ -87,11 +96,20 @@ export class StudiesService {
     });
   }
 
-  private async transition(id: string, version: number, to: RadiologyStatus, userId: string, extra: Record<string, unknown>) {
+  private async transition(
+    id: string,
+    version: number,
+    to: RadiologyStatus,
+    userId: string,
+    extra: Record<string, unknown>,
+  ) {
     const current = await this.repo.findBareById(id);
     assertUpdatable(current, version, 'Study');
     assertStudyTransition(current.status, to);
-    assertWritten(await this.repo.updateGuarded(id, version, { status: to, updatedBy: userId, ...extra }), 'Study');
+    assertWritten(
+      await this.repo.updateGuarded(id, version, { status: to, updatedBy: userId, ...extra }),
+      'Study',
+    );
     return this.findById(id);
   }
 }

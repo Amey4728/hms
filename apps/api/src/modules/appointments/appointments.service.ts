@@ -1,5 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import type { Appointment, AppointmentStatus } from '@prisma/client';
+import type { AppointmentStatus } from '@prisma/client';
 import type {
   BookAppointmentInput,
   CancelAppointmentInput,
@@ -27,8 +27,16 @@ export class AppointmentsService {
 
   // ── booking ────────────────────────────────────────────────────────────
   async book(input: BookAppointmentInput, userId: string) {
-    const { patientId, doctorId, hospitalId, branchId, departmentId, scheduledStart, durationMinutes, reason } =
-      input;
+    const {
+      patientId,
+      doctorId,
+      hospitalId,
+      branchId,
+      departmentId,
+      scheduledStart,
+      durationMinutes,
+      reason,
+    } = input;
     await this.validateParticipants(patientId, doctorId, hospitalId, branchId, departmentId);
 
     const start = scheduledStart;
@@ -53,7 +61,8 @@ export class AppointmentsService {
   }
 
   async walkIn(input: WalkInInput, userId: string) {
-    const { patientId, doctorId, hospitalId, branchId, departmentId, durationMinutes, reason } = input;
+    const { patientId, doctorId, hospitalId, branchId, departmentId, durationMinutes, reason } =
+      input;
     await this.validateParticipants(patientId, doctorId, hospitalId, branchId, departmentId);
 
     const start = new Date();
@@ -120,12 +129,14 @@ export class AppointmentsService {
     const current = await this.repo.findActiveById(id);
     assertUpdatable(current, input.version, 'Appointment');
     if (current.status !== 'BOOKED') {
-      throw new ConflictException(`Only BOOKED appointments can be rescheduled (current: ${current.status})`);
+      throw new ConflictException(
+        `Only BOOKED appointments can be rescheduled (current: ${current.status})`,
+      );
     }
 
     const durationMs =
-      (input.durationMinutes ?? Math.round((+current.scheduledEnd - +current.scheduledStart) / 60_000)) *
-      60_000;
+      (input.durationMinutes ??
+        Math.round((+current.scheduledEnd - +current.scheduledStart) / 60_000)) * 60_000;
     const start = input.scheduledStart;
     const end = new Date(start.getTime() + durationMs);
     await this.assertNoOverlap(current.doctorId, start, end, id);

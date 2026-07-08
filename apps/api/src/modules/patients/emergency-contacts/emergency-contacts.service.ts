@@ -1,9 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { EmergencyContact } from '@prisma/client';
-import type {
-  CreateEmergencyContactInput,
-  UpdateEmergencyContactInput,
-} from '@hms/shared';
+import type { CreateEmergencyContactInput, UpdateEmergencyContactInput } from '@hms/shared';
 import { assertUpdatable, assertWritten } from '../../../common/utils/optimistic';
 import { PatientsService } from '../patients.service';
 import { EmergencyContactsRepository } from './emergency-contacts.repository';

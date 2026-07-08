@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma, type PharmacySale } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 export const saleInclude = Prisma.validator<Prisma.PharmacySaleInclude>()({
@@ -27,7 +27,10 @@ export class SalesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   findWithItems(id: string): Promise<SaleWithItems | null> {
-    return this.prisma.pharmacySale.findFirst({ where: { id, deletedAt: null }, include: saleInclude });
+    return this.prisma.pharmacySale.findFirst({
+      where: { id, deletedAt: null },
+      include: saleInclude,
+    });
   }
 
   async findManyPaginated(params: {
@@ -41,7 +44,13 @@ export class SalesRepository {
       ...(params.patientId ? { patientId: params.patientId } : {}),
     };
     const [items, total] = await this.prisma.$transaction([
-      this.prisma.pharmacySale.findMany({ where, include: saleInclude, orderBy: { createdAt: params.sortOrder }, skip: params.skip, take: params.take }),
+      this.prisma.pharmacySale.findMany({
+        where,
+        include: saleInclude,
+        orderBy: { createdAt: params.sortOrder },
+        skip: params.skip,
+        take: params.take,
+      }),
       this.prisma.pharmacySale.count({ where }),
     ]);
     return { items, total };
@@ -71,10 +80,16 @@ export class SalesRepository {
         const medicine = await tx.medicine.findFirst({
           where: { id: line.medicineId, deletedAt: null, isActive: true },
         });
-        if (!medicine) throw new BadRequestException(`Medicine ${line.medicineId} not found or inactive`);
+        if (!medicine)
+          throw new BadRequestException(`Medicine ${line.medicineId} not found or inactive`);
 
         const batches = await tx.medicineBatch.findMany({
-          where: { medicineId: line.medicineId, deletedAt: null, quantity: { gt: 0 }, expiryDate: { gte: today } },
+          where: {
+            medicineId: line.medicineId,
+            deletedAt: null,
+            quantity: { gt: 0 },
+            expiryDate: { gte: today },
+          },
           orderBy: { expiryDate: 'asc' },
         });
         const available = batches.reduce((s, b) => s + b.quantity, 0);
@@ -89,7 +104,10 @@ export class SalesRepository {
           if (remaining <= 0) break;
           const take = Math.min(remaining, batch.quantity);
           remaining -= take;
-          await tx.medicineBatch.update({ where: { id: batch.id }, data: { quantity: { decrement: take } } });
+          await tx.medicineBatch.update({
+            where: { id: batch.id },
+            data: { quantity: { decrement: take } },
+          });
           const lineTotal = medicine.unitPrice.mul(take);
           subtotal = subtotal.add(lineTotal);
           await tx.pharmacySaleItem.create({

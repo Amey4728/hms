@@ -45,7 +45,10 @@ async function bootstrap(): Promise<void> {
   });
 
   // Browser-friendly root: redirect "/" to the Swagger docs.
-  app.getHttpAdapter().getInstance().get('/', (_req, res) => res.redirect('/docs'));
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .get('/', (_req, res) => res.redirect('/docs'));
 
   const port = config.getOrThrow<number>('app.port');
   await app.listen(port);

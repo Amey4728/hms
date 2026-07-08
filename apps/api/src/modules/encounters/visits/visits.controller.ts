@@ -1,5 +1,15 @@
 import {
-  Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Query,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
@@ -22,7 +32,10 @@ class UpdateVisitDto extends createZodDto(updateVisitSchema) {}
 class CloseVisitDto extends createZodDto(closeVisitSchema) {}
 class CreateDiagnosisDto extends createZodDto(createDiagnosisSchema) {}
 class VisitQueryDto extends createZodDto(
-  paginationQuerySchema.extend({ patientId: z.string().uuid().optional(), status: z.enum(['OPEN', 'CLOSED']).optional() }),
+  paginationQuerySchema.extend({
+    patientId: z.string().uuid().optional(),
+    status: z.enum(['OPEN', 'CLOSED']).optional(),
+  }),
 ) {}
 
 @ApiTags('Clinical · Visits')
@@ -57,7 +70,11 @@ export class VisitsController {
   @Permissions(PERMISSIONS.PATIENT_UPDATE)
   @ResponseMessage('Visit updated successfully')
   @ApiOperation({ summary: 'Update doctor notes / vitals (optimistic lock)' })
-  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateVisitDto, @CurrentUser('id') userId: string) {
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdateVisitDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.update(id, dto, userId);
   }
 
@@ -65,7 +82,11 @@ export class VisitsController {
   @Permissions(PERMISSIONS.PATIENT_UPDATE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Visit closed')
-  close(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CloseVisitDto, @CurrentUser('id') userId: string) {
+  close(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: CloseVisitDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.close(id, dto.version, userId);
   }
 
@@ -73,7 +94,11 @@ export class VisitsController {
   @Permissions(PERMISSIONS.DIAGNOSIS_CREATE)
   @ResponseMessage('Diagnosis recorded successfully')
   @ApiOperation({ summary: 'Add a diagnosis to a visit' })
-  addDiagnosis(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CreateDiagnosisDto, @CurrentUser('id') userId: string) {
+  addDiagnosis(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: CreateDiagnosisDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.addDiagnosis(id, dto, userId);
   }
 

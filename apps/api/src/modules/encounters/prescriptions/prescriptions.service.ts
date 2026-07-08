@@ -14,7 +14,8 @@ export class PrescriptionsService {
   ) {}
 
   async create(input: CreatePrescriptionInput, userId: string) {
-    if (!(await this.patients.existsActive(input.patientId))) throw new NotFoundException('Patient not found');
+    if (!(await this.patients.existsActive(input.patientId)))
+      throw new NotFoundException('Patient not found');
     const prescription = await this.repo.create({
       patientId: input.patientId,
       visitId: input.visitId,
@@ -33,9 +34,19 @@ export class PrescriptionsService {
     return toPrescriptionView(p);
   }
 
-  async list(query: { page: number; limit: number; sortOrder: 'asc' | 'desc'; patientId?: string }) {
+  async list(query: {
+    page: number;
+    limit: number;
+    sortOrder: 'asc' | 'desc';
+    patientId?: string;
+  }) {
     const { skip, take } = toPrismaPagination(query);
-    const { items, total } = await this.repo.findManyPaginated({ skip, take, patientId: query.patientId, sortOrder: query.sortOrder });
+    const { items, total } = await this.repo.findManyPaginated({
+      skip,
+      take,
+      patientId: query.patientId,
+      sortOrder: query.sortOrder,
+    });
     return PaginatedResult.from(items.map(toPrescriptionView), total, query.page, query.limit);
   }
 }

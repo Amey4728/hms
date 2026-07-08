@@ -16,13 +16,21 @@ export class ClaimsRepository {
     return this.prisma.insuranceClaim.create({ data, include: claimInclude });
   }
   findWithRefs(id: string): Promise<ClaimWithRefs | null> {
-    return this.prisma.insuranceClaim.findFirst({ where: { id, deletedAt: null }, include: claimInclude });
+    return this.prisma.insuranceClaim.findFirst({
+      where: { id, deletedAt: null },
+      include: claimInclude,
+    });
   }
   findBareById(id: string): Promise<InsuranceClaim | null> {
     return this.prisma.insuranceClaim.findFirst({ where: { id, deletedAt: null } });
   }
   async findManyPaginated(params: {
-    skip: number; take: number; patientId?: string; providerId?: string; status?: ClaimStatus; sortOrder: 'asc' | 'desc';
+    skip: number;
+    take: number;
+    patientId?: string;
+    providerId?: string;
+    status?: ClaimStatus;
+    sortOrder: 'asc' | 'desc';
   }): Promise<{ items: ClaimWithRefs[]; total: number }> {
     const where: Prisma.InsuranceClaimWhereInput = {
       deletedAt: null,
@@ -31,12 +39,22 @@ export class ClaimsRepository {
       ...(params.status ? { status: params.status } : {}),
     };
     const [items, total] = await this.prisma.$transaction([
-      this.prisma.insuranceClaim.findMany({ where, include: claimInclude, orderBy: { createdAt: params.sortOrder }, skip: params.skip, take: params.take }),
+      this.prisma.insuranceClaim.findMany({
+        where,
+        include: claimInclude,
+        orderBy: { createdAt: params.sortOrder },
+        skip: params.skip,
+        take: params.take,
+      }),
       this.prisma.insuranceClaim.count({ where }),
     ]);
     return { items, total };
   }
-  async updateGuarded(id: string, expectedVersion: number, data: Prisma.InsuranceClaimUpdateInput): Promise<number> {
+  async updateGuarded(
+    id: string,
+    expectedVersion: number,
+    data: Prisma.InsuranceClaimUpdateInput,
+  ): Promise<number> {
     const r = await this.prisma.insuranceClaim.updateMany({
       where: { id, version: expectedVersion, deletedAt: null },
       data: { ...data, version: { increment: 1 } },

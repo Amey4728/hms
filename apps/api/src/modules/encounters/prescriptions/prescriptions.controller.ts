@@ -10,7 +10,9 @@ import { paginationQuerySchema } from '../../../common/dto/pagination.dto';
 import { PrescriptionsService } from './prescriptions.service';
 
 class CreatePrescriptionDto extends createZodDto(createPrescriptionSchema) {}
-class PrescriptionQueryDto extends createZodDto(paginationQuerySchema.extend({ patientId: z.string().uuid().optional() })) {}
+class PrescriptionQueryDto extends createZodDto(
+  paginationQuerySchema.extend({ patientId: z.string().uuid().optional() }),
+) {}
 
 @ApiTags('Clinical · Prescriptions')
 @ApiBearerAuth()

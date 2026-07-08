@@ -2,7 +2,11 @@ import type { Employee, Payslip } from '@prisma/client';
 import { formatEmployeeNumber } from '@hms/shared';
 
 export function toEmployeeView(e: Employee) {
-  return { ...e, employeeRef: formatEmployeeNumber(e.employeeNumber), baseSalary: e.baseSalary.toNumber() };
+  return {
+    ...e,
+    employeeRef: formatEmployeeNumber(e.employeeNumber),
+    baseSalary: e.baseSalary.toNumber(),
+  };
 }
 
 export function toPayslipView(p: Payslip) {

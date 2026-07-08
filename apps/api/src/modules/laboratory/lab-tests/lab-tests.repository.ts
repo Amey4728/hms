@@ -38,13 +38,22 @@ export class LabTestsRepository {
         : {}),
     };
     const [items, total] = await this.prisma.$transaction([
-      this.prisma.labTest.findMany({ where, orderBy: { name: params.sortOrder }, skip: params.skip, take: params.take }),
+      this.prisma.labTest.findMany({
+        where,
+        orderBy: { name: params.sortOrder },
+        skip: params.skip,
+        take: params.take,
+      }),
       this.prisma.labTest.count({ where }),
     ]);
     return { items, total };
   }
 
-  async updateGuarded(id: string, expectedVersion: number, data: Prisma.LabTestUpdateInput): Promise<number> {
+  async updateGuarded(
+    id: string,
+    expectedVersion: number,
+    data: Prisma.LabTestUpdateInput,
+  ): Promise<number> {
     const result = await this.prisma.labTest.updateMany({
       where: { id, version: expectedVersion, deletedAt: null },
       data: { ...data, version: { increment: 1 } },

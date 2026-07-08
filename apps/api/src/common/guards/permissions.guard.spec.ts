@@ -25,9 +25,7 @@ describe('PermissionsGuard', () => {
 
   function guardRequiring(required: string[] | undefined, isPublic = false): PermissionsGuard {
     const reflector = {
-      getAllAndOverride: jest.fn((key: string) =>
-        key === 'isPublic' ? isPublic : required,
-      ),
+      getAllAndOverride: jest.fn((key: string) => (key === 'isPublic' ? isPublic : required)),
     } as unknown as Reflector;
     return new PermissionsGuard(reflector);
   }

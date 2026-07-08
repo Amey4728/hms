@@ -28,7 +28,11 @@ export class VisitsRepository {
     return this.prisma.visit.findFirst({ where: { id, deletedAt: null } });
   }
   async findManyPaginated(params: {
-    skip: number; take: number; patientId?: string; status?: VisitStatus; sortOrder: 'asc' | 'desc';
+    skip: number;
+    take: number;
+    patientId?: string;
+    status?: VisitStatus;
+    sortOrder: 'asc' | 'desc';
   }): Promise<{ items: VisitWithDetails[]; total: number }> {
     const where: Prisma.VisitWhereInput = {
       deletedAt: null,
@@ -36,12 +40,22 @@ export class VisitsRepository {
       ...(params.status ? { status: params.status } : {}),
     };
     const [items, total] = await this.prisma.$transaction([
-      this.prisma.visit.findMany({ where, include: visitInclude, orderBy: { visitDate: params.sortOrder }, skip: params.skip, take: params.take }),
+      this.prisma.visit.findMany({
+        where,
+        include: visitInclude,
+        orderBy: { visitDate: params.sortOrder },
+        skip: params.skip,
+        take: params.take,
+      }),
       this.prisma.visit.count({ where }),
     ]);
     return { items, total };
   }
-  async updateGuarded(id: string, expectedVersion: number, data: Prisma.VisitUpdateInput): Promise<number> {
+  async updateGuarded(
+    id: string,
+    expectedVersion: number,
+    data: Prisma.VisitUpdateInput,
+  ): Promise<number> {
     const r = await this.prisma.visit.updateMany({
       where: { id, version: expectedVersion, deletedAt: null },
       data: { ...data, version: { increment: 1 } },
@@ -52,6 +66,9 @@ export class VisitsRepository {
     return this.prisma.diagnosis.create({ data });
   }
   softDeleteDiagnosis(visitId: string, id: string): Promise<Prisma.BatchPayload> {
-    return this.prisma.diagnosis.updateMany({ where: { id, visitId, deletedAt: null }, data: { deletedAt: new Date() } });
+    return this.prisma.diagnosis.updateMany({
+      where: { id, visitId, deletedAt: null },
+      data: { deletedAt: new Date() },
+    });
   }
 }

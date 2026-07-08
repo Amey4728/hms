@@ -33,7 +33,11 @@ export class InventoryService {
 
   async stockLevels(query: PaginationQuery) {
     const { skip, take } = toPrismaPagination(query);
-    const { items, total } = await this.repo.findMedicinesWithBatches({ skip, take, search: query.search });
+    const { items, total } = await this.repo.findMedicinesWithBatches({
+      skip,
+      take,
+      search: query.search,
+    });
     const rows = items.map((m) => {
       const stock = stockOf(m);
       return {
@@ -53,7 +57,13 @@ export class InventoryService {
   async lowStockAlerts() {
     const all = await this.repo.findAllMedicinesWithBatches();
     return all
-      .map((m) => ({ medicineId: m.id, code: m.code, name: m.name, reorderLevel: m.reorderLevel, stock: stockOf(m) }))
+      .map((m) => ({
+        medicineId: m.id,
+        code: m.code,
+        name: m.name,
+        reorderLevel: m.reorderLevel,
+        stock: stockOf(m),
+      }))
       .filter((r) => r.stock <= r.reorderLevel);
   }
 

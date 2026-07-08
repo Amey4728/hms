@@ -65,7 +65,14 @@ export class PatientsRepository {
         : {}),
     };
 
-    const sortable = new Set(['createdAt', 'updatedAt', 'lastName', 'firstName', 'dateOfBirth', 'patientNumber']);
+    const sortable = new Set([
+      'createdAt',
+      'updatedAt',
+      'lastName',
+      'firstName',
+      'dateOfBirth',
+      'patientNumber',
+    ]);
     const orderBy: Prisma.PatientOrderByWithRelationInput =
       params.sortBy && sortable.has(params.sortBy)
         ? { [params.sortBy]: params.sortOrder }

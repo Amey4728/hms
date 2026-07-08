@@ -14,7 +14,8 @@ export class TreatmentPlansService {
   ) {}
 
   async create(input: CreateTreatmentPlanInput, userId: string) {
-    if (!(await this.patients.existsActive(input.patientId))) throw new NotFoundException('Patient not found');
+    if (!(await this.patients.existsActive(input.patientId)))
+      throw new NotFoundException('Patient not found');
     return this.repo.create({
       patientId: input.patientId,
       visitId: input.visitId,
@@ -27,16 +28,29 @@ export class TreatmentPlansService {
     });
   }
 
-  async list(query: { page: number; limit: number; sortOrder: 'asc' | 'desc'; patientId?: string }) {
+  async list(query: {
+    page: number;
+    limit: number;
+    sortOrder: 'asc' | 'desc';
+    patientId?: string;
+  }) {
     const { skip, take } = toPrismaPagination(query);
-    const { items, total } = await this.repo.findManyPaginated({ skip, take, patientId: query.patientId, sortOrder: query.sortOrder });
+    const { items, total } = await this.repo.findManyPaginated({
+      skip,
+      take,
+      patientId: query.patientId,
+      sortOrder: query.sortOrder,
+    });
     return PaginatedResult.from(items, total, query.page, query.limit);
   }
 
   async updateStatus(id: string, input: UpdateTreatmentPlanInput, userId: string) {
     const current = await this.repo.findActiveById(id);
     assertUpdatable(current, input.version, 'Treatment plan');
-    assertWritten(await this.repo.updateGuarded(id, input.version, { status: input.status, updatedBy: userId }), 'Treatment plan');
+    assertWritten(
+      await this.repo.updateGuarded(id, input.version, { status: input.status, updatedBy: userId }),
+      'Treatment plan',
+    );
     const updated = await this.repo.findActiveById(id);
     if (!updated) throw new NotFoundException('Treatment plan not found');
     return updated;

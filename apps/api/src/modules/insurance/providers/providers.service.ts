@@ -19,14 +19,22 @@ export class ProvidersService {
   }
   async list(query: PaginationQuery) {
     const { skip, take } = toPrismaPagination(query);
-    const { items, total } = await this.repo.findManyPaginated({ skip, take, search: query.search, sortOrder: query.sortOrder });
+    const { items, total } = await this.repo.findManyPaginated({
+      skip,
+      take,
+      search: query.search,
+      sortOrder: query.sortOrder,
+    });
     return PaginatedResult.from(items, total, query.page, query.limit);
   }
   async update(id: string, input: UpdateProviderInput, userId: string) {
     const { version, ...changes } = input;
     const current = await this.repo.findActiveById(id);
     assertUpdatable(current, version, 'Provider');
-    assertWritten(await this.repo.updateGuarded(id, version, { ...changes, updatedBy: userId }), 'Provider');
+    assertWritten(
+      await this.repo.updateGuarded(id, version, { ...changes, updatedBy: userId }),
+      'Provider',
+    );
     return this.findById(id);
   }
   async remove(id: string, userId: string): Promise<{ id: string }> {

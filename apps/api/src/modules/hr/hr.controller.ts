@@ -1,4 +1,15 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
@@ -18,10 +29,19 @@ class CreateShiftDto extends createZodDto(createShiftSchema) {}
 class LeaveDecisionDto extends createZodDto(leaveDecisionSchema) {}
 class PayslipStatusDto extends createZodDto(payslipStatusSchema) {}
 class LeaveQueryDto extends createZodDto(
-  paginationQuerySchema.extend({ employeeId: z.string().uuid().optional(), status: z.enum(['PENDING', 'APPROVED', 'REJECTED']).optional() }),
+  paginationQuerySchema.extend({
+    employeeId: z.string().uuid().optional(),
+    status: z.enum(['PENDING', 'APPROVED', 'REJECTED']).optional(),
+  }),
 ) {}
 class PayslipQueryDto extends createZodDto(
-  paginationQuerySchema.extend({ employeeId: z.string().uuid().optional(), period: z.string().regex(/^\d{4}-\d{2}$/).optional() }),
+  paginationQuerySchema.extend({
+    employeeId: z.string().uuid().optional(),
+    period: z
+      .string()
+      .regex(/^\d{4}-\d{2}$/)
+      .optional(),
+  }),
 ) {}
 
 @ApiTags('HR · Leave, Shifts & Payroll')
@@ -41,7 +61,11 @@ export class HrController {
   @Permissions(PERMISSIONS.STAFF_MANAGE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Leave approved')
-  approveLeave(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: LeaveDecisionDto, @CurrentUser('id') userId: string) {
+  approveLeave(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: LeaveDecisionDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.hr.decideLeave(id, true, dto, userId);
   }
 
@@ -49,7 +73,11 @@ export class HrController {
   @Permissions(PERMISSIONS.STAFF_MANAGE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Leave rejected')
-  rejectLeave(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: LeaveDecisionDto, @CurrentUser('id') userId: string) {
+  rejectLeave(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: LeaveDecisionDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.hr.decideLeave(id, false, dto, userId);
   }
 
@@ -72,7 +100,11 @@ export class HrController {
   @Permissions(PERMISSIONS.PAYROLL_MANAGE)
   @ResponseMessage('Payslip status updated')
   @ApiOperation({ summary: 'Move a payslip DRAFT → FINALIZED → PAID' })
-  setPayslipStatus(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: PayslipStatusDto, @CurrentUser('id') userId: string) {
+  setPayslipStatus(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: PayslipStatusDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.hr.setPayslipStatus(id, dto, userId);
   }
 }

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { PERMISSIONS, createTreatmentPlanSchema, updateTreatmentPlanSchema } from '@hms/shared';
@@ -11,7 +11,9 @@ import { TreatmentPlansService } from './treatment-plans.service';
 
 class CreateTreatmentPlanDto extends createZodDto(createTreatmentPlanSchema) {}
 class UpdateTreatmentPlanDto extends createZodDto(updateTreatmentPlanSchema) {}
-class TreatmentPlanQueryDto extends createZodDto(paginationQuerySchema.extend({ patientId: z.string().uuid().optional() })) {}
+class TreatmentPlanQueryDto extends createZodDto(
+  paginationQuerySchema.extend({ patientId: z.string().uuid().optional() }),
+) {}
 
 @ApiTags('Clinical · Treatment Plans')
 @ApiBearerAuth()
@@ -36,7 +38,11 @@ export class TreatmentPlansController {
   @Patch(':id/status')
   @Permissions(PERMISSIONS.PATIENT_UPDATE)
   @ResponseMessage('Treatment plan updated successfully')
-  updateStatus(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateTreatmentPlanDto, @CurrentUser('id') userId: string) {
+  updateStatus(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdateTreatmentPlanDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.updateStatus(id, dto, userId);
   }
 }

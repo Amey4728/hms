@@ -1,5 +1,14 @@
 import {
-  Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Query,
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
@@ -25,7 +34,10 @@ class TransitionDto extends createZodDto(studyTransitionSchema) {}
 class ReportDto extends createZodDto(reportStudySchema) {}
 class CancelDto extends createZodDto(cancelStudySchema) {}
 class StudyQueryDto extends createZodDto(
-  paginationQuerySchema.extend({ patientId: z.string().uuid().optional(), status: radiologyStatusSchema.optional() }),
+  paginationQuerySchema.extend({
+    patientId: z.string().uuid().optional(),
+    status: radiologyStatusSchema.optional(),
+  }),
 ) {}
 
 @ApiTags('Radiology · Studies')
@@ -60,7 +72,11 @@ export class StudiesController {
   @Permissions(PERMISSIONS.RADIOLOGY_MANAGE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Study scheduled')
-  schedule(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: ScheduleDto, @CurrentUser('id') userId: string) {
+  schedule(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: ScheduleDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.schedule(id, dto, userId);
   }
 
@@ -68,7 +84,11 @@ export class StudiesController {
   @Permissions(PERMISSIONS.RADIOLOGY_MANAGE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Study marked performed')
-  perform(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: TransitionDto, @CurrentUser('id') userId: string) {
+  perform(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: TransitionDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.perform(id, dto.version, userId);
   }
 
@@ -77,7 +97,11 @@ export class StudiesController {
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Report uploaded')
   @ApiOperation({ summary: 'Upload the report (findings/impression/image) → REPORTED' })
-  report(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: ReportDto, @CurrentUser('id') userId: string) {
+  report(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: ReportDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.report(id, dto, userId);
   }
 
@@ -85,7 +109,11 @@ export class StudiesController {
   @Permissions(PERMISSIONS.RADIOLOGY_MANAGE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Study cancelled')
-  cancel(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CancelDto, @CurrentUser('id') userId: string) {
+  cancel(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: CancelDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.cancel(id, dto, userId);
   }
 }

@@ -9,7 +9,12 @@ import { InventoryService } from './inventory.service';
 import { ProcurementRepository } from './procurement.repository';
 
 @Module({
-  controllers: [VendorsController, ItemsController, PurchaseRequestsController, TransfersController],
+  controllers: [
+    VendorsController,
+    ItemsController,
+    PurchaseRequestsController,
+    TransfersController,
+  ],
   providers: [InventoryService, ProcurementRepository],
 })
 export class InventoryModule {}

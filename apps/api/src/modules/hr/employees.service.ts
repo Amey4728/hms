@@ -13,7 +13,12 @@ export class EmployeesService {
 
   async create(input: CreateEmployeeInput, userId: string) {
     const { joinedAt, ...rest } = input;
-    const employee = await this.repo.createEmployee({ ...rest, joinedAt: dateOnly(joinedAt), createdBy: userId, updatedBy: userId });
+    const employee = await this.repo.createEmployee({
+      ...rest,
+      joinedAt: dateOnly(joinedAt),
+      createdBy: userId,
+      updatedBy: userId,
+    });
     return toEmployeeView(employee);
   }
 
@@ -23,9 +28,21 @@ export class EmployeesService {
     return toEmployeeView(e);
   }
 
-  async list(query: { page: number; limit: number; sortOrder: 'asc' | 'desc'; search?: string; status?: EmployeeStatus }) {
+  async list(query: {
+    page: number;
+    limit: number;
+    sortOrder: 'asc' | 'desc';
+    search?: string;
+    status?: EmployeeStatus;
+  }) {
     const { skip, take } = toPrismaPagination(query);
-    const { items, total } = await this.repo.listEmployees({ skip, take, search: query.search, status: query.status, sortOrder: query.sortOrder });
+    const { items, total } = await this.repo.listEmployees({
+      skip,
+      take,
+      search: query.search,
+      status: query.status,
+      sortOrder: query.sortOrder,
+    });
     return PaginatedResult.from(items.map(toEmployeeView), total, query.page, query.limit);
   }
 
@@ -33,7 +50,10 @@ export class EmployeesService {
     const { version, ...changes } = input;
     const current = await this.repo.findEmployee(id);
     assertUpdatable(current, version, 'Employee');
-    assertWritten(await this.repo.updateEmployee(id, version, { ...changes, updatedBy: userId }), 'Employee');
+    assertWritten(
+      await this.repo.updateEmployee(id, version, { ...changes, updatedBy: userId }),
+      'Employee',
+    );
     return this.findById(id);
   }
 

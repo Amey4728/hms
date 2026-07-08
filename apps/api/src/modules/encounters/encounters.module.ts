@@ -14,9 +14,12 @@ import { VisitsService } from './visits/visits.service';
   imports: [PatientsModule],
   controllers: [VisitsController, PrescriptionsController, TreatmentPlansController],
   providers: [
-    VisitsService, VisitsRepository,
-    PrescriptionsService, PrescriptionsRepository,
-    TreatmentPlansService, TreatmentPlansRepository,
+    VisitsService,
+    VisitsRepository,
+    PrescriptionsService,
+    PrescriptionsRepository,
+    TreatmentPlansService,
+    TreatmentPlansRepository,
   ],
 })
 export class EncountersModule {}

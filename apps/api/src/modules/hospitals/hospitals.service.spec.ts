@@ -53,9 +53,9 @@ describe('HospitalsService', () => {
 
     it('throws Conflict on a stale version (optimistic lock)', async () => {
       repo.findActiveById.mockResolvedValue(makeHospital({ version: 5 }));
-      await expect(
-        service.update('h1', { version: 3, name: 'New' }, 'u1'),
-      ).rejects.toBeInstanceOf(ConflictException);
+      await expect(service.update('h1', { version: 3, name: 'New' }, 'u1')).rejects.toBeInstanceOf(
+        ConflictException,
+      );
       expect(repo.updateGuarded).not.toHaveBeenCalled();
     });
 

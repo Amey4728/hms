@@ -1,5 +1,15 @@
 import {
-  Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Query,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
@@ -25,9 +35,13 @@ class MarkAttendanceDto extends createZodDto(markAttendanceSchema) {}
 class RequestLeaveDto extends createZodDto(createLeaveSchema) {}
 class GeneratePayslipDto extends createZodDto(generatePayslipSchema) {}
 class EmployeeQueryDto extends createZodDto(
-  paginationQuerySchema.extend({ status: z.enum(['ACTIVE', 'ON_LEAVE', 'INACTIVE', 'TERMINATED']).optional() }),
+  paginationQuerySchema.extend({
+    status: z.enum(['ACTIVE', 'ON_LEAVE', 'INACTIVE', 'TERMINATED']).optional(),
+  }),
 ) {}
-class RangeDto extends createZodDto(z.object({ from: z.string().optional(), to: z.string().optional() })) {}
+class RangeDto extends createZodDto(
+  z.object({ from: z.string().optional(), to: z.string().optional() }),
+) {}
 
 @ApiTags('HR · Employees')
 @ApiBearerAuth()
@@ -62,7 +76,11 @@ export class EmployeesController {
   @Patch(':id')
   @Permissions(PERMISSIONS.STAFF_MANAGE)
   @ResponseMessage('Employee updated successfully')
-  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateEmployeeDto, @CurrentUser('id') userId: string) {
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdateEmployeeDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.employees.update(id, dto, userId);
   }
 
@@ -79,7 +97,11 @@ export class EmployeesController {
   @Permissions(PERMISSIONS.ATTENDANCE_MANAGE)
   @ResponseMessage('Attendance recorded')
   @ApiOperation({ summary: 'Mark attendance for a day (upsert)' })
-  markAttendance(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: MarkAttendanceDto, @CurrentUser('id') userId: string) {
+  markAttendance(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: MarkAttendanceDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.hr.markAttendance(id, dto, userId);
   }
 
@@ -112,7 +134,11 @@ export class EmployeesController {
   @Permissions(PERMISSIONS.PAYROLL_MANAGE)
   @ResponseMessage('Payslip generated')
   @ApiOperation({ summary: 'Generate a payslip (net = base + allowances − deductions)' })
-  generatePayslip(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: GeneratePayslipDto, @CurrentUser('id') userId: string) {
+  generatePayslip(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: GeneratePayslipDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.hr.generatePayslip(id, dto, userId);
   }
 }

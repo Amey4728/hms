@@ -22,7 +22,12 @@ export class ExamsService {
 
   async list(query: PaginationQuery) {
     const { skip, take } = toPrismaPagination(query);
-    const { items, total } = await this.repo.findManyPaginated({ skip, take, search: query.search, sortOrder: query.sortOrder });
+    const { items, total } = await this.repo.findManyPaginated({
+      skip,
+      take,
+      search: query.search,
+      sortOrder: query.sortOrder,
+    });
     return PaginatedResult.from(items.map(toExamView), total, query.page, query.limit);
   }
 
@@ -30,7 +35,10 @@ export class ExamsService {
     const { version, ...changes } = input;
     const current = await this.repo.findActiveById(id);
     assertUpdatable(current, version, 'Exam');
-    assertWritten(await this.repo.updateGuarded(id, version, { ...changes, updatedBy: userId }), 'Exam');
+    assertWritten(
+      await this.repo.updateGuarded(id, version, { ...changes, updatedBy: userId }),
+      'Exam',
+    );
     return this.findById(id);
   }
 

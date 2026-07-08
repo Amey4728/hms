@@ -130,8 +130,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   private codeFromStatus(status: number): string {
-    return (
-      HttpStatus[status] ?? (status >= 500 ? 'INTERNAL_SERVER_ERROR' : 'ERROR')
-    ).toString();
+    return (HttpStatus[status] ?? (status >= 500 ? 'INTERNAL_SERVER_ERROR' : 'ERROR')).toString();
   }
 }

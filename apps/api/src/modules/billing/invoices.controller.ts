@@ -57,7 +57,11 @@ export class InvoicesController {
   @Permissions(PERMISSIONS.BILLING_GENERATE)
   @ResponseMessage('Payment recorded successfully')
   @ApiOperation({ summary: 'Record a payment (updates balance + status)' })
-  pay(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: RecordPaymentDto, @CurrentUser('id') userId: string) {
+  pay(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: RecordPaymentDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.recordPayment(id, dto, userId);
   }
 
@@ -65,7 +69,11 @@ export class InvoicesController {
   @Permissions(PERMISSIONS.BILLING_REFUND)
   @ResponseMessage('Refund recorded successfully')
   @ApiOperation({ summary: 'Refund against an invoice' })
-  refund(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: RefundDto, @CurrentUser('id') userId: string) {
+  refund(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: RefundDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.refund(id, dto, userId);
   }
 
@@ -74,7 +82,11 @@ export class InvoicesController {
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Invoice cancelled')
   @ApiOperation({ summary: 'Cancel an unpaid invoice' })
-  cancel(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CancelInvoiceDto, @CurrentUser('id') userId: string) {
+  cancel(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: CancelInvoiceDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.cancel(id, dto, userId);
   }
 }

@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { ClaimStatus } from '@prisma/client';
-import type {
-  ApproveClaimInput,
-  CreateClaimInput,
-  RejectClaimInput,
-} from '@hms/shared';
+import type { ApproveClaimInput, CreateClaimInput, RejectClaimInput } from '@hms/shared';
 import { PaginatedResult } from '../../../common/dto/paginated-result';
 import { toPrismaPagination } from '../../../common/dto/pagination.dto';
 import { assertUpdatable, assertWritten } from '../../../common/utils/optimistic';
@@ -15,8 +11,12 @@ import { assertClaimTransition } from './claims.state';
 import { ClaimsRepository } from './claims.repository';
 
 interface ClaimQuery {
-  page: number; limit: number; sortOrder: 'asc' | 'desc';
-  patientId?: string; providerId?: string; status?: ClaimStatus;
+  page: number;
+  limit: number;
+  sortOrder: 'asc' | 'desc';
+  patientId?: string;
+  providerId?: string;
+  status?: ClaimStatus;
 }
 
 @Injectable()
@@ -28,8 +28,10 @@ export class ClaimsService {
   ) {}
 
   async create(input: CreateClaimInput, userId: string) {
-    if (!(await this.patients.existsActive(input.patientId))) throw new NotFoundException('Patient not found');
-    if (!(await this.providers.findActiveById(input.providerId))) throw new NotFoundException('Provider not found');
+    if (!(await this.patients.existsActive(input.patientId)))
+      throw new NotFoundException('Patient not found');
+    if (!(await this.providers.findActiveById(input.providerId)))
+      throw new NotFoundException('Provider not found');
     const claim = await this.repo.create({
       patientId: input.patientId,
       providerId: input.providerId,
@@ -52,7 +54,12 @@ export class ClaimsService {
   async list(query: ClaimQuery) {
     const { skip, take } = toPrismaPagination(query);
     const { items, total } = await this.repo.findManyPaginated({
-      skip, take, patientId: query.patientId, providerId: query.providerId, status: query.status, sortOrder: query.sortOrder,
+      skip,
+      take,
+      patientId: query.patientId,
+      providerId: query.providerId,
+      status: query.status,
+      sortOrder: query.sortOrder,
     });
     return PaginatedResult.from(items.map(toClaimView), total, query.page, query.limit);
   }
@@ -80,11 +87,20 @@ export class ClaimsService {
     return this.transition(id, version, 'SETTLED', userId, { settledAt: new Date() });
   }
 
-  private async transition(id: string, version: number, to: ClaimStatus, userId: string, extra: Record<string, unknown>) {
+  private async transition(
+    id: string,
+    version: number,
+    to: ClaimStatus,
+    userId: string,
+    extra: Record<string, unknown>,
+  ) {
     const current = await this.repo.findBareById(id);
     assertUpdatable(current, version, 'Claim');
     assertClaimTransition(current.status, to);
-    assertWritten(await this.repo.updateGuarded(id, version, { status: to, updatedBy: userId, ...extra }), 'Claim');
+    assertWritten(
+      await this.repo.updateGuarded(id, version, { status: to, updatedBy: userId, ...extra }),
+      'Claim',
+    );
     return this.findById(id);
   }
 }

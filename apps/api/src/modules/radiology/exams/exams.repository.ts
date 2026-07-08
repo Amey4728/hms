@@ -23,17 +23,31 @@ export class ExamsRepository {
     const where: Prisma.RadiologyExamWhereInput = {
       deletedAt: null,
       ...(params.search
-        ? { OR: [{ name: { contains: params.search, mode: 'insensitive' } }, { code: { contains: params.search, mode: 'insensitive' } }] }
+        ? {
+            OR: [
+              { name: { contains: params.search, mode: 'insensitive' } },
+              { code: { contains: params.search, mode: 'insensitive' } },
+            ],
+          }
         : {}),
     };
     const [items, total] = await this.prisma.$transaction([
-      this.prisma.radiologyExam.findMany({ where, orderBy: { name: params.sortOrder }, skip: params.skip, take: params.take }),
+      this.prisma.radiologyExam.findMany({
+        where,
+        orderBy: { name: params.sortOrder },
+        skip: params.skip,
+        take: params.take,
+      }),
       this.prisma.radiologyExam.count({ where }),
     ]);
     return { items, total };
   }
 
-  async updateGuarded(id: string, expectedVersion: number, data: Prisma.RadiologyExamUpdateInput): Promise<number> {
+  async updateGuarded(
+    id: string,
+    expectedVersion: number,
+    data: Prisma.RadiologyExamUpdateInput,
+  ): Promise<number> {
     const result = await this.prisma.radiologyExam.updateMany({
       where: { id, version: expectedVersion, deletedAt: null },
       data: { ...data, version: { increment: 1 } },
@@ -42,6 +56,9 @@ export class ExamsRepository {
   }
 
   softDelete(id: string, userId: string): Promise<Prisma.BatchPayload> {
-    return this.prisma.radiologyExam.updateMany({ where: { id, deletedAt: null }, data: { deletedAt: new Date(), updatedBy: userId } });
+    return this.prisma.radiologyExam.updateMany({
+      where: { id, deletedAt: null },
+      data: { deletedAt: new Date(), updatedBy: userId },
+    });
   }
 }

@@ -49,7 +49,11 @@ export class ReportsService {
     const window = toWindow(range);
     const [inv, sales] = await Promise.all([
       this.prisma.invoice.aggregate({
-        where: { deletedAt: null, status: { not: 'CANCELLED' }, ...(window ? { createdAt: window } : {}) },
+        where: {
+          deletedAt: null,
+          status: { not: 'CANCELLED' },
+          ...(window ? { createdAt: window } : {}),
+        },
         _sum: { total: true, amountPaid: true, discount: true, tax: true },
         _count: true,
       }),
@@ -114,14 +118,20 @@ export class ReportsService {
     });
     const nameOf = new Map(doctors.map((d) => [d.id, `${d.firstName} ${d.lastName}`]));
     return grouped
-      .map((g) => ({ doctorId: g.doctorId, doctorName: nameOf.get(g.doctorId) ?? 'Unknown', appointments: g._count }))
+      .map((g) => ({
+        doctorId: g.doctorId,
+        doctorName: nameOf.get(g.doctorId) ?? 'Unknown',
+        appointments: g._count,
+      }))
       .sort((a, b) => b.appointments - a.appointments);
   }
 
   async inventory() {
     const meds = await this.prisma.medicine.findMany({
       where: { deletedAt: null, isActive: true },
-      include: { batches: { where: { deletedAt: null }, select: { quantity: true, expiryDate: true } } },
+      include: {
+        batches: { where: { deletedAt: null }, select: { quantity: true, expiryDate: true } },
+      },
     });
     const soon = new Date();
     soon.setUTCDate(soon.getUTCDate() + 30);
@@ -151,10 +161,14 @@ export class ReportsService {
       where: { deletedAt: null, scheduledStart: { gte: start, lt: end } },
       _count: true,
     });
-    const hospitals = await this.prisma.hospital.findMany({ where: { deletedAt: null }, select: { id: true, name: true } });
+    const hospitals = await this.prisma.hospital.findMany({
+      where: { deletedAt: null },
+      select: { id: true, name: true },
+    });
     return hospitals.map((h) => {
       const rows = grouped.filter((g) => g.hospitalId === h.id);
-      const count = (s: string) => rows.filter((r) => r.status === s).reduce((a, r) => a + r._count, 0);
+      const count = (s: string) =>
+        rows.filter((r) => r.status === s).reduce((a, r) => a + r._count, 0);
       return {
         hospitalId: h.id,
         hospitalName: h.name,

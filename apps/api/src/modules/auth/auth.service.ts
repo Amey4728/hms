@@ -100,7 +100,13 @@ export class AuthService {
     const willLock = user.failedLoginAttempts + 1 >= max;
     const lockUntil = willLock ? new Date(Date.now() + lockMinutes * 60_000) : null;
     await this.users.registerFailedLogin(user.id, lockUntil);
-    await this.recordLogin(user.email, false, ctx, user.id, willLock ? 'LOCKED_OUT' : 'BAD_PASSWORD');
+    await this.recordLogin(
+      user.email,
+      false,
+      ctx,
+      user.id,
+      willLock ? 'LOCKED_OUT' : 'BAD_PASSWORD',
+    );
   }
 
   private async issueSession(user: UserWithRbac, ctx: RefreshContext): Promise<AuthResult> {

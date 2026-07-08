@@ -3,7 +3,10 @@ import { Prisma, type LabOrder, type LabOrderItem, type LabOrderStatus } from '@
 import { PrismaService } from '../../../prisma/prisma.service';
 
 export const labOrderInclude = Prisma.validator<Prisma.LabOrderInclude>()({
-  items: { include: { test: { select: { code: true, name: true, unit: true, referenceRange: true } } }, orderBy: { createdAt: 'asc' } },
+  items: {
+    include: { test: { select: { code: true, name: true, unit: true, referenceRange: true } } },
+    orderBy: { createdAt: 'asc' },
+  },
   patient: { select: { firstName: true, lastName: true, patientNumber: true } },
 });
 export type LabOrderWithItems = Prisma.LabOrderGetPayload<{ include: typeof labOrderInclude }>;
@@ -17,7 +20,10 @@ export class LabOrdersRepository {
   }
 
   findWithItems(id: string): Promise<LabOrderWithItems | null> {
-    return this.prisma.labOrder.findFirst({ where: { id, deletedAt: null }, include: labOrderInclude });
+    return this.prisma.labOrder.findFirst({
+      where: { id, deletedAt: null },
+      include: labOrderInclude,
+    });
   }
 
   findBareById(id: string): Promise<LabOrder | null> {
@@ -51,7 +57,11 @@ export class LabOrdersRepository {
     return { items, total };
   }
 
-  async updateGuarded(id: string, expectedVersion: number, data: Prisma.LabOrderUpdateInput): Promise<number> {
+  async updateGuarded(
+    id: string,
+    expectedVersion: number,
+    data: Prisma.LabOrderUpdateInput,
+  ): Promise<number> {
     const result = await this.prisma.labOrder.updateMany({
       where: { id, version: expectedVersion, deletedAt: null },
       data: { ...data, version: { increment: 1 } },

@@ -9,7 +9,11 @@ import { toVisitView } from '../encounters.mapper';
 import { VisitsRepository } from './visits.repository';
 
 interface VisitQuery {
-  page: number; limit: number; sortOrder: 'asc' | 'desc'; patientId?: string; status?: VisitStatus;
+  page: number;
+  limit: number;
+  sortOrder: 'asc' | 'desc';
+  patientId?: string;
+  status?: VisitStatus;
 }
 
 @Injectable()
@@ -20,7 +24,8 @@ export class VisitsService {
   ) {}
 
   async create(input: CreateVisitInput, userId: string) {
-    if (!(await this.patients.existsActive(input.patientId))) throw new NotFoundException('Patient not found');
+    if (!(await this.patients.existsActive(input.patientId)))
+      throw new NotFoundException('Patient not found');
     const visit = await this.repo.create({
       patientId: input.patientId,
       doctorId: input.doctorId,
@@ -45,7 +50,11 @@ export class VisitsService {
   async list(query: VisitQuery) {
     const { skip, take } = toPrismaPagination(query);
     const { items, total } = await this.repo.findManyPaginated({
-      skip, take, patientId: query.patientId, status: query.status, sortOrder: query.sortOrder,
+      skip,
+      take,
+      patientId: query.patientId,
+      status: query.status,
+      sortOrder: query.sortOrder,
     });
     return PaginatedResult.from(items.map(toVisitView), total, query.page, query.limit);
   }
@@ -71,7 +80,11 @@ export class VisitsService {
     assertUpdatable(current, version, 'Visit');
     if (current.status === 'CLOSED') throw new ConflictException('Visit is already closed');
     assertWritten(
-      await this.repo.updateGuarded(id, version, { status: 'CLOSED', closedAt: new Date(), updatedBy: userId }),
+      await this.repo.updateGuarded(id, version, {
+        status: 'CLOSED',
+        closedAt: new Date(),
+        updatedBy: userId,
+      }),
       'Visit',
     );
     return this.findById(id);
@@ -80,7 +93,8 @@ export class VisitsService {
   async addDiagnosis(visitId: string, input: CreateDiagnosisInput, userId: string) {
     const visit = await this.repo.findBareById(visitId);
     if (!visit) throw new NotFoundException('Visit not found');
-    if (visit.status === 'CLOSED') throw new ConflictException('Cannot add a diagnosis to a closed visit');
+    if (visit.status === 'CLOSED')
+      throw new ConflictException('Cannot add a diagnosis to a closed visit');
     await this.repo.addDiagnosis({
       visitId,
       patientId: visit.patientId,

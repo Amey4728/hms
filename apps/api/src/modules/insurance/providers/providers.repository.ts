@@ -12,20 +12,39 @@ export class ProvidersRepository {
   findActiveById(id: string): Promise<InsuranceProvider | null> {
     return this.prisma.insuranceProvider.findFirst({ where: { id, deletedAt: null } });
   }
-  async findManyPaginated(params: { skip: number; take: number; search?: string; sortOrder: 'asc' | 'desc' }) {
+  async findManyPaginated(params: {
+    skip: number;
+    take: number;
+    search?: string;
+    sortOrder: 'asc' | 'desc';
+  }) {
     const where: Prisma.InsuranceProviderWhereInput = {
       deletedAt: null,
       ...(params.search
-        ? { OR: [{ name: { contains: params.search, mode: 'insensitive' } }, { code: { contains: params.search, mode: 'insensitive' } }] }
+        ? {
+            OR: [
+              { name: { contains: params.search, mode: 'insensitive' } },
+              { code: { contains: params.search, mode: 'insensitive' } },
+            ],
+          }
         : {}),
     };
     const [items, total] = await this.prisma.$transaction([
-      this.prisma.insuranceProvider.findMany({ where, orderBy: { name: params.sortOrder }, skip: params.skip, take: params.take }),
+      this.prisma.insuranceProvider.findMany({
+        where,
+        orderBy: { name: params.sortOrder },
+        skip: params.skip,
+        take: params.take,
+      }),
       this.prisma.insuranceProvider.count({ where }),
     ]);
     return { items, total };
   }
-  async updateGuarded(id: string, expectedVersion: number, data: Prisma.InsuranceProviderUpdateInput): Promise<number> {
+  async updateGuarded(
+    id: string,
+    expectedVersion: number,
+    data: Prisma.InsuranceProviderUpdateInput,
+  ): Promise<number> {
     const r = await this.prisma.insuranceProvider.updateMany({
       where: { id, version: expectedVersion, deletedAt: null },
       data: { ...data, version: { increment: 1 } },
@@ -33,6 +52,9 @@ export class ProvidersRepository {
     return r.count;
   }
   softDelete(id: string, userId: string) {
-    return this.prisma.insuranceProvider.updateMany({ where: { id, deletedAt: null }, data: { deletedAt: new Date(), updatedBy: userId } });
+    return this.prisma.insuranceProvider.updateMany({
+      where: { id, deletedAt: null },
+      data: { deletedAt: new Date(), updatedBy: userId },
+    });
   }
 }

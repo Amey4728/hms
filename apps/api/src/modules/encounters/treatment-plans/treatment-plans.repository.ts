@@ -12,18 +12,32 @@ export class TreatmentPlansRepository {
   findActiveById(id: string): Promise<TreatmentPlan | null> {
     return this.prisma.treatmentPlan.findFirst({ where: { id, deletedAt: null } });
   }
-  async findManyPaginated(params: { skip: number; take: number; patientId?: string; sortOrder: 'asc' | 'desc' }) {
+  async findManyPaginated(params: {
+    skip: number;
+    take: number;
+    patientId?: string;
+    sortOrder: 'asc' | 'desc';
+  }) {
     const where: Prisma.TreatmentPlanWhereInput = {
       deletedAt: null,
       ...(params.patientId ? { patientId: params.patientId } : {}),
     };
     const [items, total] = await this.prisma.$transaction([
-      this.prisma.treatmentPlan.findMany({ where, orderBy: { createdAt: params.sortOrder }, skip: params.skip, take: params.take }),
+      this.prisma.treatmentPlan.findMany({
+        where,
+        orderBy: { createdAt: params.sortOrder },
+        skip: params.skip,
+        take: params.take,
+      }),
       this.prisma.treatmentPlan.count({ where }),
     ]);
     return { items, total };
   }
-  async updateGuarded(id: string, expectedVersion: number, data: Prisma.TreatmentPlanUpdateInput): Promise<number> {
+  async updateGuarded(
+    id: string,
+    expectedVersion: number,
+    data: Prisma.TreatmentPlanUpdateInput,
+  ): Promise<number> {
     const r = await this.prisma.treatmentPlan.updateMany({
       where: { id, version: expectedVersion, deletedAt: null },
       data: { ...data, version: { increment: 1 } },

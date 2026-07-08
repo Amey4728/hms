@@ -60,7 +60,7 @@ export class AppointmentsController {
   @Get('slots')
   @Permissions(PERMISSIONS.APPOINTMENT_READ)
   @ResponseMessage('Available slots retrieved successfully')
-  @ApiOperation({ summary: "Free slots for a doctor on a date (from availability)" })
+  @ApiOperation({ summary: 'Free slots for a doctor on a date (from availability)' })
   slots(@Query() query: SlotsQueryDto) {
     return this.appointments.slotsFor(query.doctorId, query.date);
   }
@@ -68,7 +68,7 @@ export class AppointmentsController {
   @Get('queue')
   @Permissions(PERMISSIONS.APPOINTMENT_READ)
   @ResponseMessage('Queue retrieved successfully')
-  @ApiOperation({ summary: "Live queue (checked-in / in-progress) for a doctor on a date" })
+  @ApiOperation({ summary: 'Live queue (checked-in / in-progress) for a doctor on a date' })
   queue(@Query() query: QueueQueryDto) {
     return this.appointments.queue(query.doctorId, query.date);
   }

@@ -36,7 +36,11 @@ export class AuthController {
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @ResponseMessage('Registration successful')
   @ApiOperation({ summary: 'Self-register a patient account' })
-  async register(@Body() dto: RegisterDto, @Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async register(
+    @Body() dto: RegisterDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const result = await this.authService.register(dto, this.ctx(req));
     return this.respondWithSession(res, result);
   }
@@ -47,7 +51,11 @@ export class AuthController {
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @ResponseMessage('Login successful')
   @ApiOperation({ summary: 'Authenticate and receive an access token' })
-  async login(@Body() dto: LoginDto, @Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async login(
+    @Body() dto: LoginDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const result = await this.authService.login(dto, this.ctx(req));
     return this.respondWithSession(res, result);
   }

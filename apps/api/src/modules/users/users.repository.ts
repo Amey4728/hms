@@ -4,7 +4,9 @@ import { PrismaService } from '../../prisma/prisma.service';
 
 /** Prisma include that pulls a user's roles and their permissions in one query. */
 const userWithRbac = Prisma.validator<Prisma.UserInclude>()({
-  userRoles: { include: { role: { include: { rolePermissions: { include: { permission: true } } } } } },
+  userRoles: {
+    include: { role: { include: { rolePermissions: { include: { permission: true } } } } },
+  },
 });
 
 export type UserWithRbac = Prisma.UserGetPayload<{ include: typeof userWithRbac }>;
@@ -45,7 +47,9 @@ export class UsersRepository {
   }): Promise<{ items: UserWithRbac[]; total: number }> {
     const where: Prisma.UserWhereInput = {
       deletedAt: null,
-      ...(params.role ? { userRoles: { some: { role: { name: params.role, deletedAt: null } } } } : {}),
+      ...(params.role
+        ? { userRoles: { some: { role: { name: params.role, deletedAt: null } } } }
+        : {}),
       ...(params.search
         ? {
             OR: [
@@ -57,7 +61,14 @@ export class UsersRepository {
         : {}),
     };
 
-    const sortable = new Set(['createdAt', 'updatedAt', 'email', 'firstName', 'lastName', 'status']);
+    const sortable = new Set([
+      'createdAt',
+      'updatedAt',
+      'email',
+      'firstName',
+      'lastName',
+      'status',
+    ]);
     const orderBy: Prisma.UserOrderByWithRelationInput =
       params.sortBy && sortable.has(params.sortBy)
         ? { [params.sortBy]: params.sortOrder }

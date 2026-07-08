@@ -15,10 +15,7 @@ import { PERMISSIONS } from '@hms/shared';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
 import { ResponseMessage } from '../../../common/decorators/response-message.decorator';
-import {
-  CreateEmergencyContactDto,
-  UpdateEmergencyContactDto,
-} from './emergency-contacts.dto';
+import { CreateEmergencyContactDto, UpdateEmergencyContactDto } from './emergency-contacts.dto';
 import { EmergencyContactsService } from './emergency-contacts.service';
 
 @ApiTags('Patient · Emergency Contacts')

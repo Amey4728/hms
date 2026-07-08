@@ -25,8 +25,6 @@ export function assertUpdatable(
 /** Throws when the guarded write matched no row (a concurrent update slipped in). */
 export function assertWritten(count: number, entity: string): void {
   if (count === 0) {
-    throw new ConflictException(
-      `${entity} was modified concurrently. Reload and try again.`,
-    );
+    throw new ConflictException(`${entity} was modified concurrently. Reload and try again.`);
   }
 }

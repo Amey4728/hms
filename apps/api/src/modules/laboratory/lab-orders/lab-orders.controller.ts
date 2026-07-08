@@ -66,7 +66,11 @@ export class LabOrdersController {
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Sample collected')
   @ApiOperation({ summary: 'Mark the sample as collected (ORDERED → SAMPLE_COLLECTED)' })
-  collect(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: LabTransitionDto, @CurrentUser('id') userId: string) {
+  collect(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: LabTransitionDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.collectSample(id, dto.version, userId);
   }
 
@@ -75,7 +79,11 @@ export class LabOrdersController {
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Processing started')
   @ApiOperation({ summary: 'Start processing (SAMPLE_COLLECTED → IN_PROGRESS)' })
-  start(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: LabTransitionDto, @CurrentUser('id') userId: string) {
+  start(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: LabTransitionDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.startProcessing(id, dto.version, userId);
   }
 
@@ -84,7 +92,11 @@ export class LabOrdersController {
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Lab order completed')
   @ApiOperation({ summary: 'Complete the order (requires all results entered)' })
-  complete(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: LabTransitionDto, @CurrentUser('id') userId: string) {
+  complete(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: LabTransitionDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.complete(id, dto.version, userId);
   }
 
@@ -92,7 +104,11 @@ export class LabOrdersController {
   @Permissions(PERMISSIONS.LAB_RESULT_CREATE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Lab order cancelled')
-  cancel(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: CancelLabOrderDto, @CurrentUser('id') userId: string) {
+  cancel(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: CancelLabOrderDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.cancel(id, dto, userId);
   }
 

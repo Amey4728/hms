@@ -11,12 +11,7 @@ import { LabTestsService } from './lab-tests/lab-tests.service';
 @Module({
   imports: [PatientsModule, HospitalsModule],
   controllers: [LabTestsController, LabOrdersController],
-  providers: [
-    LabTestsService,
-    LabTestsRepository,
-    LabOrdersService,
-    LabOrdersRepository,
-  ],
+  providers: [LabTestsService, LabTestsRepository, LabOrdersService, LabOrdersRepository],
   exports: [LabTestsRepository],
 })
 export class LaboratoryModule {}

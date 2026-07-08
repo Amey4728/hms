@@ -1,4 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma, type InvoiceStatus, type PaymentMethod, type PaymentType } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -9,7 +14,11 @@ export const invoiceInclude = Prisma.validator<Prisma.InvoiceInclude>()({
 });
 export type InvoiceWithDetails = Prisma.InvoiceGetPayload<{ include: typeof invoiceInclude }>;
 
-function deriveStatus(total: Prisma.Decimal, paid: Prisma.Decimal, type: PaymentType): InvoiceStatus {
+function deriveStatus(
+  total: Prisma.Decimal,
+  paid: Prisma.Decimal,
+  type: PaymentType,
+): InvoiceStatus {
   if (paid.gte(total)) return 'PAID';
   if (paid.lte(0)) return type === 'REFUND' ? 'REFUNDED' : 'ISSUED';
   return type === 'REFUND' ? 'REFUNDED' : 'PARTIALLY_PAID';
@@ -24,7 +33,10 @@ export class InvoicesRepository {
   }
 
   findWithDetails(id: string): Promise<InvoiceWithDetails | null> {
-    return this.prisma.invoice.findFirst({ where: { id, deletedAt: null }, include: invoiceInclude });
+    return this.prisma.invoice.findFirst({
+      where: { id, deletedAt: null },
+      include: invoiceInclude,
+    });
   }
 
   async findManyPaginated(params: {
@@ -40,7 +52,13 @@ export class InvoicesRepository {
       ...(params.status ? { status: params.status } : {}),
     };
     const [items, total] = await this.prisma.$transaction([
-      this.prisma.invoice.findMany({ where, include: invoiceInclude, orderBy: { createdAt: params.sortOrder }, skip: params.skip, take: params.take }),
+      this.prisma.invoice.findMany({
+        where,
+        include: invoiceInclude,
+        orderBy: { createdAt: params.sortOrder },
+        skip: params.skip,
+        take: params.take,
+      }),
       this.prisma.invoice.count({ where }),
     ]);
     return { items, total };
@@ -57,7 +75,9 @@ export class InvoicesRepository {
     receivedById: string;
   }): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
-      const invoice = await tx.invoice.findFirst({ where: { id: params.invoiceId, deletedAt: null } });
+      const invoice = await tx.invoice.findFirst({
+        where: { id: params.invoiceId, deletedAt: null },
+      });
       if (!invoice) throw new NotFoundException('Invoice not found');
       if (invoice.status === 'CANCELLED') {
         throw new ConflictException('Cannot transact on a cancelled invoice');
@@ -74,7 +94,9 @@ export class InvoicesRepository {
         }
       } else {
         if (amount.gt(invoice.amountPaid)) {
-          throw new BadRequestException(`Refund exceeds amount paid (${invoice.amountPaid.toFixed(2)})`);
+          throw new BadRequestException(
+            `Refund exceeds amount paid (${invoice.amountPaid.toFixed(2)})`,
+          );
         }
         newPaid = invoice.amountPaid.sub(amount);
       }
@@ -102,7 +124,12 @@ export class InvoicesRepository {
     });
   }
 
-  async cancel(id: string, expectedVersion: number, reason: string | undefined, userId: string): Promise<void> {
+  async cancel(
+    id: string,
+    expectedVersion: number,
+    reason: string | undefined,
+    userId: string,
+  ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
       const invoice = await tx.invoice.findFirst({ where: { id, deletedAt: null } });
       if (!invoice) throw new NotFoundException('Invoice not found');

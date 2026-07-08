@@ -3,7 +3,11 @@ import { formatPurchaseNumber } from '@hms/shared';
 import type { PurchaseWithItems } from './procurement.repository';
 
 export function toItemView(i: InventoryItem) {
-  return { ...i, unitCost: i.unitCost ? i.unitCost.toNumber() : null, isLow: i.quantity <= i.reorderLevel };
+  return {
+    ...i,
+    unitCost: i.unitCost ? i.unitCost.toNumber() : null,
+    isLow: i.quantity <= i.reorderLevel,
+  };
 }
 
 export function toPurchaseView(p: PurchaseWithItems) {

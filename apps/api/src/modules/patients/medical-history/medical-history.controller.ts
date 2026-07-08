@@ -15,10 +15,7 @@ import { PERMISSIONS } from '@hms/shared';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { Permissions } from '../../../common/decorators/permissions.decorator';
 import { ResponseMessage } from '../../../common/decorators/response-message.decorator';
-import {
-  CreateMedicalHistoryDto,
-  UpdateMedicalHistoryDto,
-} from './medical-history.dto';
+import { CreateMedicalHistoryDto, UpdateMedicalHistoryDto } from './medical-history.dto';
 import { MedicalHistoryService } from './medical-history.service';
 
 @ApiTags('Patient · Medical History')

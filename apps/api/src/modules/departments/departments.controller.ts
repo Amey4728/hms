@@ -17,11 +17,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Permissions } from '../../common/decorators/permissions.decorator';
 import { ResponseMessage } from '../../common/decorators/response-message.decorator';
 import { DepartmentsService } from './departments.service';
-import {
-  CreateDepartmentDto,
-  DepartmentQueryDto,
-  UpdateDepartmentDto,
-} from './dto/department.dto';
+import { CreateDepartmentDto, DepartmentQueryDto, UpdateDepartmentDto } from './dto/department.dto';
 
 @ApiTags('Departments')
 @ApiBearerAuth()

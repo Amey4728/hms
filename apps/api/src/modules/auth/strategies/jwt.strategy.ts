@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import type { AccessTokenPayload, AuthenticatedUser } from '../../../common/types/authenticated-user';
+import type {
+  AccessTokenPayload,
+  AuthenticatedUser,
+} from '../../../common/types/authenticated-user';
 
 /**
  * Validates the access token from the Authorization: Bearer header. Permissions

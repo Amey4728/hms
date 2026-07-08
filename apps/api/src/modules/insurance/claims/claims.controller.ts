@@ -1,5 +1,14 @@
 import {
-  Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Query,
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
@@ -63,7 +72,11 @@ export class ClaimsController {
   @Permissions(PERMISSIONS.INSURANCE_CLAIM_APPROVE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Claim moved to review')
-  review(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: TransitionDto, @CurrentUser('id') userId: string) {
+  review(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: TransitionDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.review(id, dto.version, userId);
   }
 
@@ -71,7 +84,11 @@ export class ClaimsController {
   @Permissions(PERMISSIONS.INSURANCE_CLAIM_APPROVE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Claim approved')
-  approve(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: ApproveDto, @CurrentUser('id') userId: string) {
+  approve(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: ApproveDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.approve(id, dto, userId);
   }
 
@@ -79,7 +96,11 @@ export class ClaimsController {
   @Permissions(PERMISSIONS.INSURANCE_CLAIM_APPROVE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Claim rejected')
-  reject(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: RejectDto, @CurrentUser('id') userId: string) {
+  reject(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: RejectDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.reject(id, dto, userId);
   }
 
@@ -87,7 +108,11 @@ export class ClaimsController {
   @Permissions(PERMISSIONS.INSURANCE_CLAIM_APPROVE)
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Claim settled')
-  settle(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: TransitionDto, @CurrentUser('id') userId: string) {
+  settle(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: TransitionDto,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.service.settle(id, dto.version, userId);
   }
 }

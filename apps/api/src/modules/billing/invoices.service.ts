@@ -29,7 +29,12 @@ export class InvoicesService {
     const items = input.items.map((i) => {
       const lineTotal = new Prisma.Decimal(i.unitPrice).mul(i.quantity);
       subtotal = subtotal.add(lineTotal);
-      return { description: i.description, quantity: i.quantity, unitPrice: new Prisma.Decimal(i.unitPrice), lineTotal };
+      return {
+        description: i.description,
+        quantity: i.quantity,
+        unitPrice: new Prisma.Decimal(i.unitPrice),
+        lineTotal,
+      };
     });
 
     const discount = Prisma.Decimal.min(new Prisma.Decimal(input.discount), subtotal);
