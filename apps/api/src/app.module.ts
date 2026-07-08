@@ -19,6 +19,7 @@ import { BranchesModule } from './modules/branches/branches.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { HealthModule } from './modules/health/health.module';
 import { HospitalsModule } from './modules/hospitals/hospitals.module';
+import { InsuranceModule } from './modules/insurance/insurance.module';
 import { LaboratoryModule } from './modules/laboratory/laboratory.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { PharmacyModule } from './modules/pharmacy/pharmacy.module';
@@ -59,6 +60,7 @@ import { UsersModule } from './modules/users/users.module';
     PharmacyModule,
     BillingModule,
     RadiologyModule,
+    InsuranceModule,
     ReportsModule,
     HealthModule,
   ],

@@ -9,3 +9,4 @@ export * from './lab';
 export * from './pharmacy';
 export * from './billing';
 export * from './radiology';
+export * from './insurance';
