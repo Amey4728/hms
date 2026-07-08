@@ -5,6 +5,8 @@ import { PlaceholderPage } from '@/components/PlaceholderPage';
 import { LoginPage } from '@/features/auth/LoginPage';
 import { AppointmentsListPage } from '@/features/appointments/AppointmentsListPage';
 import { QueueBoardPage } from '@/features/appointments/QueueBoardPage';
+import { LabOrdersPage } from '@/features/laboratory/LabOrdersPage';
+import { LabCataloguePage } from '@/features/laboratory/LabCataloguePage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { UsersListPage } from '@/features/users/UsersListPage';
 import { PatientsListPage } from '@/features/patients/PatientsListPage';
@@ -25,6 +27,8 @@ export const router = createBrowserRouter([
           { path: 'patients/:id', element: <PatientProfilePage /> },
           { path: 'appointments', element: <AppointmentsListPage /> },
           { path: 'appointments/queue', element: <QueueBoardPage /> },
+          { path: 'laboratory', element: <LabOrdersPage /> },
+          { path: 'laboratory/catalogue', element: <LabCataloguePage /> },
           { path: 'hospitals', element: <PlaceholderPage title="Hospitals" phase="a later phase" /> },
           { path: 'users', element: <UsersListPage /> },
         ],

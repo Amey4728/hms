@@ -4,6 +4,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 
 export const labOrderInclude = Prisma.validator<Prisma.LabOrderInclude>()({
   items: { include: { test: { select: { code: true, name: true, unit: true, referenceRange: true } } }, orderBy: { createdAt: 'asc' } },
+  patient: { select: { firstName: true, lastName: true, patientNumber: true } },
 });
 export type LabOrderWithItems = Prisma.LabOrderGetPayload<{ include: typeof labOrderInclude }>;
 

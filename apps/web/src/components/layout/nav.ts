@@ -1,7 +1,10 @@
 import {
   Building2,
   CalendarClock,
+  FlaskConical,
   LayoutDashboard,
+  Pill,
+  Receipt,
   Users,
   UserRound,
   type LucideIcon,
@@ -24,6 +27,24 @@ export const NAV_ITEMS: NavItem[] = [
     to: '/appointments',
     icon: CalendarClock,
     anyOf: [PERMISSIONS.APPOINTMENT_READ],
+  },
+  {
+    label: 'Laboratory',
+    to: '/laboratory',
+    icon: FlaskConical,
+    anyOf: [PERMISSIONS.LAB_RESULT_READ],
+  },
+  {
+    label: 'Pharmacy',
+    to: '/pharmacy',
+    icon: Pill,
+    anyOf: [PERMISSIONS.INVENTORY_MANAGE, PERMISSIONS.PHARMACY_SALE_CREATE],
+  },
+  {
+    label: 'Billing',
+    to: '/billing',
+    icon: Receipt,
+    anyOf: [PERMISSIONS.BILLING_READ],
   },
   {
     label: 'Hospitals',

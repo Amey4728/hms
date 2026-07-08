@@ -1,5 +1,5 @@
 import type { LabTest } from '@prisma/client';
-import { formatLabOrderNumber } from '@hms/shared';
+import { formatLabOrderNumber, formatMrn } from '@hms/shared';
 import type { LabOrderWithItems } from './lab-orders/lab-orders.repository';
 
 /** Convert a LabTest row (Decimal price → number). */
@@ -28,6 +28,8 @@ export function toLabOrderView(o: LabOrderWithItems) {
     orderNumber: o.orderNumber,
     orderRef: formatLabOrderNumber(o.orderNumber),
     patientId: o.patientId,
+    patientName: `${o.patient.firstName} ${o.patient.lastName}`,
+    patientMrn: formatMrn(o.patient.patientNumber),
     hospitalId: o.hospitalId,
     orderedById: o.orderedById,
     status: o.status,
