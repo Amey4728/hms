@@ -14,6 +14,7 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import { PrismaModule } from './prisma/prisma.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { BillingModule } from './modules/billing/billing.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { HealthModule } from './modules/health/health.module';
@@ -54,6 +55,7 @@ import { UsersModule } from './modules/users/users.module';
     AppointmentsModule,
     LaboratoryModule,
     PharmacyModule,
+    BillingModule,
     HealthModule,
   ],
   controllers: [AppController],

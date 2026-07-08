@@ -7,3 +7,4 @@ export * from './scheduling';
 export * from './core';
 export * from './lab';
 export * from './pharmacy';
+export * from './billing';

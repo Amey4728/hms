@@ -121,6 +121,27 @@ enum MedicineForm {
   OTHER
 }
 
+enum InvoiceStatus {
+  ISSUED
+  PARTIALLY_PAID
+  PAID
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  UPI
+  INSURANCE
+  BANK_TRANSFER
+}
+
+enum PaymentType {
+  PAYMENT
+  REFUND
+}
+
 // ── Identity & Access ────────────────────────────────────────────────────
 
 model User {
@@ -330,6 +351,7 @@ model Hospital {
   labTests             LabTest[]
   medicines            Medicine[]
   pharmacySales        PharmacySale[]
+  invoices             Invoice[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -447,6 +469,7 @@ model Patient {
   appointments      Appointment[]
   labOrders         LabOrder[]
   pharmacySales     PharmacySale[]
+  invoices          Invoice[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -800,4 +823,76 @@ model PharmacySaleItem {
 
   @@index([medicineId])
   @@map("pharmacy_sale_items")
+}
+
+// ── Billing ──────────────────────────────────────────────────────────────
+
+model Invoice {
+  id            String @id @default(uuid()) @db.Uuid
+  invoiceNumber Int    @unique @default(autoincrement())
+
+  patientId  String   @db.Uuid
+  hospitalId String?  @db.Uuid
+  patient    Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  hospital   Hospital? @relation(fields: [hospitalId], references: [id], onDelete: SetNull)
+
+  status     InvoiceStatus @default(ISSUED)
+  subtotal   Decimal       @default(0) @db.Decimal(12, 2)
+  discount   Decimal       @default(0) @db.Decimal(12, 2)
+  tax        Decimal       @default(0) @db.Decimal(12, 2)
+  total      Decimal       @default(0) @db.Decimal(12, 2)
+  amountPaid Decimal       @default(0) @db.Decimal(12, 2)
+  notes      String?
+
+  cancelledAt        DateTime?
+  cancellationReason String?
+
+  items    InvoiceItem[]
+  payments Payment[]
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([patientId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id        String  @id @default(uuid()) @db.Uuid
+  invoiceId String  @db.Uuid
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  description String
+  quantity    Int     @default(1)
+  unitPrice   Decimal @db.Decimal(10, 2)
+  lineTotal   Decimal @db.Decimal(12, 2)
+
+  createdAt DateTime @default(now())
+
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+model Payment {
+  id        String  @id @default(uuid()) @db.Uuid
+  invoiceId String  @db.Uuid
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  amount       Decimal       @db.Decimal(12, 2)
+  method       PaymentMethod @default(CASH)
+  type         PaymentType   @default(PAYMENT)
+  reference    String?
+  note         String?
+  receivedById String?       @db.Uuid
+
+  createdAt DateTime @default(now())
+
+  @@index([invoiceId])
+  @@map("payments")
 }
