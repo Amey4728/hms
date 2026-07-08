@@ -7,6 +7,9 @@ import { AppointmentsListPage } from '@/features/appointments/AppointmentsListPa
 import { QueueBoardPage } from '@/features/appointments/QueueBoardPage';
 import { LabOrdersPage } from '@/features/laboratory/LabOrdersPage';
 import { LabCataloguePage } from '@/features/laboratory/LabCataloguePage';
+import { SalesPage } from '@/features/pharmacy/SalesPage';
+import { MedicinesPage } from '@/features/pharmacy/MedicinesPage';
+import { StockPage } from '@/features/pharmacy/StockPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { UsersListPage } from '@/features/users/UsersListPage';
 import { PatientsListPage } from '@/features/patients/PatientsListPage';
@@ -29,6 +32,9 @@ export const router = createBrowserRouter([
           { path: 'appointments/queue', element: <QueueBoardPage /> },
           { path: 'laboratory', element: <LabOrdersPage /> },
           { path: 'laboratory/catalogue', element: <LabCataloguePage /> },
+          { path: 'pharmacy', element: <SalesPage /> },
+          { path: 'pharmacy/medicines', element: <MedicinesPage /> },
+          { path: 'pharmacy/stock', element: <StockPage /> },
           { path: 'hospitals', element: <PlaceholderPage title="Hospitals" phase="a later phase" /> },
           { path: 'users', element: <UsersListPage /> },
         ],
