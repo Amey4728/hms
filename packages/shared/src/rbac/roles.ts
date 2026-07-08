@@ -62,7 +62,7 @@ export const ROLE_DEFINITIONS: RoleDefinition[] = [
     description: 'Clinician: consultations, diagnoses, prescriptions.',
     permissions: [
       P.PATIENT_READ, P.PATIENT_UPDATE,
-      P.APPOINTMENT_READ, P.DOCTOR_SCHEDULE,
+      P.APPOINTMENT_READ, P.APPOINTMENT_UPDATE, P.DOCTOR_SCHEDULE,
       P.PRESCRIPTION_CREATE, P.PRESCRIPTION_READ,
       P.DIAGNOSIS_CREATE, P.DIAGNOSIS_READ,
       P.LAB_RESULT_READ, P.REPORT_VIEW,

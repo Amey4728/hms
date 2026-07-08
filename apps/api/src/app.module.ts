@@ -12,6 +12,7 @@ import { PermissionsGuard } from './common/guards/permissions.guard';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
+import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
@@ -48,6 +49,7 @@ import { UsersModule } from './modules/users/users.module';
     BranchesModule,
     DepartmentsModule,
     PatientsModule,
+    AppointmentsModule,
     HealthModule,
   ],
   controllers: [AppController],

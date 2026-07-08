@@ -73,6 +73,20 @@ enum MedicalConditionStatus {
   CHRONIC
 }
 
+enum AppointmentStatus {
+  BOOKED
+  CHECKED_IN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum AppointmentType {
+  SCHEDULED
+  WALK_IN
+}
+
 // ── Identity & Access ────────────────────────────────────────────────────
 
 model User {
@@ -101,6 +115,10 @@ model User {
 
   // Optional patient portal account link (one-to-one)
   patient Patient? @relation("PatientAccount")
+
+  // Scheduling (as the doctor)
+  doctorAppointments   Appointment[]        @relation("DoctorAppointments")
+  doctorAvailabilities DoctorAvailability[]
 
   // Security trails
   refreshTokens  RefreshToken[]
@@ -265,10 +283,12 @@ model Hospital {
   postalCode    String?
   isActive      Boolean @default(true)
 
-  branches    Branch[]
-  departments Department[]
-  users       User[]
-  patients    Patient[]
+  branches             Branch[]
+  departments          Department[]
+  users                User[]
+  patients             Patient[]
+  appointments         Appointment[]
+  doctorAvailabilities DoctorAvailability[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -297,9 +317,11 @@ model Branch {
   postalCode  String?
   isActive    Boolean @default(true)
 
-  departments Department[]
-  users       User[]
-  patients    Patient[]
+  departments          Department[]
+  users                User[]
+  patients             Patient[]
+  appointments         Appointment[]
+  doctorAvailabilities DoctorAvailability[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -326,6 +348,9 @@ model Department {
   type        DepartmentType @default(CLINICAL)
   description String?
   isActive    Boolean @default(true)
+
+  appointments         Appointment[]
+  doctorAvailabilities DoctorAvailability[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -378,6 +403,7 @@ model Patient {
   emergencyContacts EmergencyContact[]
   allergies         Allergy[]
   medicalHistories  MedicalHistory[]
+  appointments      Appointment[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -462,4 +488,86 @@ model MedicalHistory {
   @@index([patientId])
   @@index([deletedAt])
   @@map("medical_histories")
+}
+
+// ── Scheduling: doctor availability & appointments ───────────────────────
+
+model DoctorAvailability {
+  id       String @id @default(uuid()) @db.Uuid
+  doctorId String @db.Uuid
+  doctor   User   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  hospitalId   String  @db.Uuid
+  branchId     String? @db.Uuid
+  departmentId String? @db.Uuid
+  hospital     Hospital    @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  branch       Branch?     @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  dayOfWeek           Int // 0 = Sunday … 6 = Saturday
+  startTime           String // "HH:MM" 24h
+  endTime             String // "HH:MM" 24h
+  slotDurationMinutes Int     @default(15)
+  isActive            Boolean @default(true)
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([doctorId, dayOfWeek])
+  @@index([hospitalId])
+  @@index([deletedAt])
+  @@map("doctor_availabilities")
+}
+
+model Appointment {
+  id                String @id @default(uuid()) @db.Uuid
+  appointmentNumber Int    @unique @default(autoincrement())
+
+  patientId String  @db.Uuid
+  doctorId  String  @db.Uuid
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor    User    @relation("DoctorAppointments", fields: [doctorId], references: [id], onDelete: Cascade)
+
+  hospitalId   String  @db.Uuid
+  branchId     String? @db.Uuid
+  departmentId String? @db.Uuid
+  hospital     Hospital    @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  branch       Branch?     @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  scheduledStart DateTime
+  scheduledEnd   DateTime
+  status         AppointmentStatus @default(BOOKED)
+  type           AppointmentType   @default(SCHEDULED)
+  reason         String?
+  notes          String?
+
+  // Queue / token (assigned on check-in or walk-in)
+  tokenDate   DateTime? @db.Date
+  tokenNumber Int?
+  checkedInAt DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  cancelledAt        DateTime?
+  cancellationReason String?
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([doctorId, tokenDate, tokenNumber])
+  @@index([doctorId, scheduledStart])
+  @@index([patientId])
+  @@index([status])
+  @@index([tokenDate])
+  @@index([deletedAt])
+  @@map("appointments")
 }
