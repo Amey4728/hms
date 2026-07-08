@@ -87,6 +87,30 @@ enum AppointmentType {
   WALK_IN
 }
 
+enum SpecimenType {
+  BLOOD
+  URINE
+  STOOL
+  SWAB
+  TISSUE
+  OTHER
+}
+
+enum LabOrderStatus {
+  ORDERED
+  SAMPLE_COLLECTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum LabResultFlag {
+  NORMAL
+  LOW
+  HIGH
+  CRITICAL
+}
+
 // ── Identity & Access ────────────────────────────────────────────────────
 
 model User {
@@ -119,6 +143,9 @@ model User {
   // Scheduling (as the doctor)
   doctorAppointments   Appointment[]        @relation("DoctorAppointments")
   doctorAvailabilities DoctorAvailability[]
+
+  // Lab (as the ordering physician)
+  orderedLabOrders LabOrder[] @relation("OrderedLabOrders")
 
   // Security trails
   refreshTokens  RefreshToken[]
@@ -289,6 +316,8 @@ model Hospital {
   patients             Patient[]
   appointments         Appointment[]
   doctorAvailabilities DoctorAvailability[]
+  labOrders            LabOrder[]
+  labTests             LabTest[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -404,6 +433,7 @@ model Patient {
   allergies         Allergy[]
   medicalHistories  MedicalHistory[]
   appointments      Appointment[]
+  labOrders         LabOrder[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -570,4 +600,90 @@ model Appointment {
   @@index([tokenDate])
   @@index([deletedAt])
   @@map("appointments")
+}
+
+// ── Laboratory ───────────────────────────────────────────────────────────
+
+model LabTest {
+  id           String       @id @default(uuid()) @db.Uuid
+  code         String       @unique
+  name         String
+  category     String?
+  specimenType SpecimenType @default(BLOOD)
+  unit         String?
+  referenceRange String?
+  price        Decimal      @default(0) @db.Decimal(10, 2)
+  isActive     Boolean      @default(true)
+
+  hospitalId String?   @db.Uuid
+  hospital   Hospital? @relation(fields: [hospitalId], references: [id], onDelete: SetNull)
+
+  orderItems LabOrderItem[]
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([category])
+  @@index([deletedAt])
+  @@map("lab_tests")
+}
+
+model LabOrder {
+  id          String @id @default(uuid()) @db.Uuid
+  orderNumber Int    @unique @default(autoincrement())
+
+  patientId   String  @db.Uuid
+  hospitalId  String  @db.Uuid
+  orderedById String? @db.Uuid
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  hospital    Hospital @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  orderedBy   User?    @relation("OrderedLabOrders", fields: [orderedById], references: [id], onDelete: SetNull)
+
+  status            LabOrderStatus @default(ORDERED)
+  notes             String?
+  sampleCollectedAt DateTime?
+  completedAt       DateTime?
+  cancelledAt       DateTime?
+  cancellationReason String?
+
+  items LabOrderItem[]
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([patientId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("lab_orders")
+}
+
+model LabOrderItem {
+  id      String   @id @default(uuid()) @db.Uuid
+  orderId String   @db.Uuid
+  testId  String   @db.Uuid
+  order   LabOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  test    LabTest  @relation(fields: [testId], references: [id], onDelete: Restrict)
+
+  resultValue String?
+  unit        String?
+  flag        LabResultFlag?
+  resultNotes String?
+  resultedAt  DateTime?
+  resultedById String? @db.Uuid
+
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([orderId, testId])
+  @@index([testId])
+  @@map("lab_order_items")
 }
