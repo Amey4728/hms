@@ -74,6 +74,37 @@ export class UsersRepository {
     return { items, total };
   }
 
+  async updateGuarded(
+    id: string,
+    expectedVersion: number,
+    data: Prisma.UserUpdateInput,
+  ): Promise<number> {
+    const result = await this.prisma.user.updateMany({
+      where: { id, version: expectedVersion, deletedAt: null },
+      data: { ...data, version: { increment: 1 } },
+    });
+    return result.count;
+  }
+
+  softDelete(id: string, userId: string): Promise<Prisma.BatchPayload> {
+    return this.prisma.user.updateMany({
+      where: { id, deletedAt: null },
+      data: { deletedAt: new Date(), updatedBy: userId },
+    });
+  }
+
+  /** Revoke all active refresh tokens for a user (e.g. on suspend/deactivate). */
+  revokeAllTokens(userId: string): Promise<Prisma.BatchPayload> {
+    return this.prisma.refreshToken.updateMany({
+      where: { userId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+  }
+
+  countRolesByIds(roleIds: string[]): Promise<number> {
+    return this.prisma.role.count({ where: { id: { in: roleIds }, deletedAt: null } });
+  }
+
   recordSuccessfulLogin(id: string): Promise<void> {
     return this.prisma.user
       .update({

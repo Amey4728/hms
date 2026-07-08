@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as argon2 from 'argon2';
 import { DEFAULT_SELF_REGISTER_ROLE } from '@hms/shared';
+import { hashPassword, verifyPassword } from '../../common/security/password.util';
 import type { AccessTokenPayload } from '../../common/types/authenticated-user';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RbacService } from '../rbac/rbac.service';
@@ -15,13 +15,6 @@ export interface AuthResult {
   accessToken: string;
   refresh: IssuedRefreshToken;
 }
-
-const ARGON2_OPTS: argon2.Options = {
-  type: argon2.argon2id,
-  memoryCost: 19_456, // 19 MiB
-  timeCost: 2,
-  parallelism: 1,
-};
 
 @Injectable()
 export class AuthService {
@@ -37,7 +30,7 @@ export class AuthService {
     const existing = await this.users.findByEmailWithRbac(dto.email);
     if (existing) throw new ConflictException('An account with this email already exists');
 
-    const passwordHash = await argon2.hash(dto.password, ARGON2_OPTS);
+    const passwordHash = await hashPassword(dto.password);
     let user = await this.users.create({
       email: dto.email,
       passwordHash,
@@ -69,7 +62,7 @@ export class AuthService {
       throw new UnauthorizedException('Account is temporarily locked. Try again later.');
     }
 
-    const valid = await argon2.verify(user.passwordHash, dto.password);
+    const valid = await verifyPassword(user.passwordHash, dto.password);
     if (!valid) {
       await this.handleFailedPassword(user, ctx);
       throw new UnauthorizedException('Invalid credentials');

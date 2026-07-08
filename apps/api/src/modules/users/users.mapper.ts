@@ -11,6 +11,7 @@ export interface UserView {
   branchId: string | null;
   roles: string[];
   permissions: string[];
+  version: number;
   lastLoginAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -43,6 +44,7 @@ export function toUserView(user: UserWithRbac): UserView {
     branchId: user.branchId,
     roles,
     permissions,
+    version: user.version,
     lastLoginAt: user.lastLoginAt,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
