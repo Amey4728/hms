@@ -3,6 +3,8 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { PlaceholderPage } from '@/components/PlaceholderPage';
 import { LoginPage } from '@/features/auth/LoginPage';
+import { AppointmentsListPage } from '@/features/appointments/AppointmentsListPage';
+import { QueueBoardPage } from '@/features/appointments/QueueBoardPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { PatientsListPage } from '@/features/patients/PatientsListPage';
 import { PatientRegisterPage } from '@/features/patients/PatientRegisterPage';
@@ -20,7 +22,8 @@ export const router = createBrowserRouter([
           { path: 'patients', element: <PatientsListPage /> },
           { path: 'patients/new', element: <PatientRegisterPage /> },
           { path: 'patients/:id', element: <PatientProfilePage /> },
-          { path: 'appointments', element: <PlaceholderPage title="Appointments" phase="Phase 4" /> },
+          { path: 'appointments', element: <AppointmentsListPage /> },
+          { path: 'appointments/queue', element: <QueueBoardPage /> },
           { path: 'hospitals', element: <PlaceholderPage title="Hospitals" phase="a later phase" /> },
           { path: 'users', element: <PlaceholderPage title="Users" phase="a later phase" /> },
         ],

@@ -102,12 +102,13 @@ export class UsersService {
     return toUserView(user);
   }
 
-  async list(query: PaginationQuery): Promise<PaginatedResult<UserView>> {
+  async list(query: PaginationQuery & { role?: string }): Promise<PaginatedResult<UserView>> {
     const { skip, take } = toPrismaPagination(query);
     const { items, total } = await this.repo.findManyPaginated({
       skip,
       take,
       search: query.search,
+      role: query.role,
       sortBy: query.sortBy,
       sortOrder: query.sortOrder,
     });

@@ -39,11 +39,13 @@ export class UsersRepository {
     skip: number;
     take: number;
     search?: string;
+    role?: string;
     sortBy?: string;
     sortOrder: 'asc' | 'desc';
   }): Promise<{ items: UserWithRbac[]; total: number }> {
     const where: Prisma.UserWhereInput = {
       deletedAt: null,
+      ...(params.role ? { userRoles: { some: { role: { name: params.role, deletedAt: null } } } } : {}),
       ...(params.search
         ? {
             OR: [

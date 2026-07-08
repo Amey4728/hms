@@ -3,6 +3,15 @@ import { Prisma, type Appointment, type AppointmentStatus } from '@prisma/client
 import { PrismaService } from '../../prisma/prisma.service';
 import { ACTIVE_STATUSES } from './appointment.state';
 
+/** Include that resolves patient + doctor display names for list/queue views. */
+export const appointmentRefsInclude = Prisma.validator<Prisma.AppointmentInclude>()({
+  patient: { select: { firstName: true, lastName: true, patientNumber: true } },
+  doctor: { select: { firstName: true, lastName: true } },
+});
+export type AppointmentWithRefs = Prisma.AppointmentGetPayload<{
+  include: typeof appointmentRefsInclude;
+}>;
+
 @Injectable()
 export class AppointmentsRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -48,7 +57,7 @@ export class AppointmentsRepository {
   }
 
   /** Live queue: checked-in / in-progress for a doctor on a token date, by token. */
-  findQueue(doctorId: string, tokenDate: Date): Promise<Appointment[]> {
+  findQueue(doctorId: string, tokenDate: Date): Promise<AppointmentWithRefs[]> {
     return this.prisma.appointment.findMany({
       where: {
         doctorId,
@@ -56,6 +65,7 @@ export class AppointmentsRepository {
         deletedAt: null,
         status: { in: ['CHECKED_IN', 'IN_PROGRESS'] },
       },
+      include: appointmentRefsInclude,
       orderBy: { tokenNumber: 'asc' },
     });
   }
@@ -70,7 +80,7 @@ export class AppointmentsRepository {
     from?: Date;
     to?: Date;
     sortOrder: 'asc' | 'desc';
-  }): Promise<{ items: Appointment[]; total: number }> {
+  }): Promise<{ items: AppointmentWithRefs[]; total: number }> {
     const where: Prisma.AppointmentWhereInput = {
       deletedAt: null,
       ...(params.doctorId ? { doctorId: params.doctorId } : {}),
@@ -90,6 +100,7 @@ export class AppointmentsRepository {
     const [items, total] = await this.prisma.$transaction([
       this.prisma.appointment.findMany({
         where,
+        include: appointmentRefsInclude,
         orderBy: { scheduledStart: params.sortOrder },
         skip: params.skip,
         take: params.take,

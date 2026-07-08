@@ -11,7 +11,7 @@ import { PaginatedResult } from '../../common/dto/paginated-result';
 import { toPrismaPagination } from '../../common/dto/pagination.dto';
 import { assertUpdatable, assertWritten } from '../../common/utils/optimistic';
 import { assertTransition, toDateOnly } from './appointment.state';
-import { toAppointmentView } from './appointments.mapper';
+import { toAppointmentListView, toAppointmentView } from './appointments.mapper';
 import { AppointmentsRepository } from './appointments.repository';
 import type { AppointmentQueryDto } from './dto/appointment.dto';
 import { SchedulingValidationService } from './scheduling-validation.service';
@@ -102,13 +102,13 @@ export class AppointmentsService {
       to: query.to,
       sortOrder: query.sortOrder,
     });
-    return PaginatedResult.from(items.map(toAppointmentView), total, query.page, query.limit);
+    return PaginatedResult.from(items.map(toAppointmentListView), total, query.page, query.limit);
   }
 
   async queue(doctorId: string, dateStr: string) {
     const tokenDate = new Date(`${dateStr}T00:00:00.000Z`);
     const items = await this.repo.findQueue(doctorId, tokenDate);
-    return items.map(toAppointmentView);
+    return items.map(toAppointmentListView);
   }
 
   slotsFor(doctorId: string, dateStr: string) {

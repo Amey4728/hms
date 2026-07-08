@@ -16,8 +16,7 @@ import { PERMISSIONS } from '@hms/shared';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Permissions } from '../../common/decorators/permissions.decorator';
 import { ResponseMessage } from '../../common/decorators/response-message.decorator';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
-import { CreateUserDto, UpdateUserDto, UpdateUserStatusDto } from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto, UpdateUserStatusDto, UsersQueryDto } from './dto/user.dto';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
@@ -37,8 +36,8 @@ export class UsersController {
   @Get()
   @Permissions(PERMISSIONS.USER_READ)
   @ResponseMessage('Users retrieved successfully')
-  @ApiOperation({ summary: 'List users (paginated, filterable, sortable)' })
-  list(@Query() query: PaginationQueryDto) {
+  @ApiOperation({ summary: 'List users (paginated, filter by search + role)' })
+  list(@Query() query: UsersQueryDto) {
     return this.usersService.list(query);
   }
 
