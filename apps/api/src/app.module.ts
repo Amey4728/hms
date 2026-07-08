@@ -23,6 +23,7 @@ import { LaboratoryModule } from './modules/laboratory/laboratory.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { PharmacyModule } from './modules/pharmacy/pharmacy.module';
 import { RbacModule } from './modules/rbac/rbac.module';
+import { ReportsModule } from './modules/reports/reports.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -56,6 +57,7 @@ import { UsersModule } from './modules/users/users.module';
     LaboratoryModule,
     PharmacyModule,
     BillingModule,
+    ReportsModule,
     HealthModule,
   ],
   controllers: [AppController],
