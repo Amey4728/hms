@@ -22,6 +22,7 @@ import { HealthModule } from './modules/health/health.module';
 import { HospitalsModule } from './modules/hospitals/hospitals.module';
 import { HrModule } from './modules/hr/hr.module';
 import { InsuranceModule } from './modules/insurance/insurance.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
 import { LaboratoryModule } from './modules/laboratory/laboratory.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { PharmacyModule } from './modules/pharmacy/pharmacy.module';
@@ -65,6 +66,7 @@ import { UsersModule } from './modules/users/users.module';
     InsuranceModule,
     EncountersModule,
     HrModule,
+    InventoryModule,
     ReportsModule,
     HealthModule,
   ],
