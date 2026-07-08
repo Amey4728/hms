@@ -5,6 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 export const invoiceInclude = Prisma.validator<Prisma.InvoiceInclude>()({
   items: { orderBy: { createdAt: 'asc' } },
   payments: { orderBy: { createdAt: 'asc' } },
+  patient: { select: { firstName: true, lastName: true, patientNumber: true } },
 });
 export type InvoiceWithDetails = Prisma.InvoiceGetPayload<{ include: typeof invoiceInclude }>;
 

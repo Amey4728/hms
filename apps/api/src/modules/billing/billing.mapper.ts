@@ -1,4 +1,4 @@
-import { formatInvoiceNumber } from '@hms/shared';
+import { formatInvoiceNumber, formatMrn } from '@hms/shared';
 import type { InvoiceWithDetails } from './invoices.repository';
 
 export function toInvoiceView(inv: InvoiceWithDetails) {
@@ -9,6 +9,8 @@ export function toInvoiceView(inv: InvoiceWithDetails) {
     invoiceNumber: inv.invoiceNumber,
     invoiceRef: formatInvoiceNumber(inv.invoiceNumber),
     patientId: inv.patientId,
+    patientName: `${inv.patient.firstName} ${inv.patient.lastName}`,
+    patientMrn: formatMrn(inv.patient.patientNumber),
     hospitalId: inv.hospitalId,
     status: inv.status,
     subtotal: inv.subtotal.toNumber(),
