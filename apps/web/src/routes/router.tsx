@@ -12,6 +12,10 @@ import { MedicinesPage } from '@/features/pharmacy/MedicinesPage';
 import { StockPage } from '@/features/pharmacy/StockPage';
 import { InvoicesPage } from '@/features/billing/InvoicesPage';
 import { ReportsPage } from '@/features/reports/ReportsPage';
+import { RadiologyStudiesPage } from '@/features/radiology/RadiologyStudiesPage';
+import { RadiologyCataloguePage } from '@/features/radiology/RadiologyCataloguePage';
+import { ClaimsPage } from '@/features/insurance/ClaimsPage';
+import { ProvidersPage } from '@/features/insurance/ProvidersPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { UsersListPage } from '@/features/users/UsersListPage';
 import { PatientsListPage } from '@/features/patients/PatientsListPage';
@@ -39,6 +43,10 @@ export const router = createBrowserRouter([
           { path: 'pharmacy/stock', element: <StockPage /> },
           { path: 'billing', element: <InvoicesPage /> },
           { path: 'reports', element: <ReportsPage /> },
+          { path: 'radiology', element: <RadiologyStudiesPage /> },
+          { path: 'radiology/catalogue', element: <RadiologyCataloguePage /> },
+          { path: 'insurance', element: <ClaimsPage /> },
+          { path: 'insurance/providers', element: <ProvidersPage /> },
           { path: 'hospitals', element: <PlaceholderPage title="Hospitals" phase="a later phase" /> },
           { path: 'users', element: <UsersListPage /> },
         ],
