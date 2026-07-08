@@ -142,6 +142,23 @@ enum PaymentType {
   REFUND
 }
 
+enum RadiologyModality {
+  XRAY
+  MRI
+  CT
+  ULTRASOUND
+  MAMMOGRAPHY
+  OTHER
+}
+
+enum RadiologyStatus {
+  REQUESTED
+  SCHEDULED
+  PERFORMED
+  REPORTED
+  CANCELLED
+}
+
 // ── Identity & Access ────────────────────────────────────────────────────
 
 model User {
@@ -352,6 +369,8 @@ model Hospital {
   medicines            Medicine[]
   pharmacySales        PharmacySale[]
   invoices             Invoice[]
+  radiologyExams       RadiologyExam[]
+  radiologyStudies     RadiologyStudy[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -470,6 +489,7 @@ model Patient {
   labOrders         LabOrder[]
   pharmacySales     PharmacySale[]
   invoices          Invoice[]
+  radiologyStudies  RadiologyStudy[]
 
   version   Int       @default(1)
   createdBy String?   @db.Uuid
@@ -895,4 +915,71 @@ model Payment {
 
   @@index([invoiceId])
   @@map("payments")
+}
+
+// ── Radiology ────────────────────────────────────────────────────────────
+
+model RadiologyExam {
+  id       String            @id @default(uuid()) @db.Uuid
+  code     String            @unique
+  name     String
+  modality RadiologyModality @default(XRAY)
+  bodyPart String?
+  price    Decimal           @default(0) @db.Decimal(10, 2)
+  isActive Boolean           @default(true)
+
+  hospitalId String?   @db.Uuid
+  hospital   Hospital? @relation(fields: [hospitalId], references: [id], onDelete: SetNull)
+
+  studies RadiologyStudy[]
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([modality])
+  @@index([deletedAt])
+  @@map("radiology_exams")
+}
+
+model RadiologyStudy {
+  id          String @id @default(uuid()) @db.Uuid
+  studyNumber Int    @unique @default(autoincrement())
+
+  patientId  String  @db.Uuid
+  hospitalId String  @db.Uuid
+  examId     String  @db.Uuid
+  patient    Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  hospital   Hospital      @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  exam       RadiologyExam @relation(fields: [examId], references: [id], onDelete: Restrict)
+
+  referredById   String? @db.Uuid
+  radiologistId  String? @db.Uuid
+
+  status      RadiologyStatus @default(REQUESTED)
+  scheduledAt DateTime?
+  performedAt DateTime?
+  reportedAt  DateTime?
+
+  findings   String?
+  impression String?
+  imageUrl   String?
+
+  cancelledAt        DateTime?
+  cancellationReason String?
+
+  version   Int       @default(1)
+  createdBy String?   @db.Uuid
+  updatedBy String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([patientId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("radiology_studies")
 }

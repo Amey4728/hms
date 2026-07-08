@@ -8,3 +8,4 @@ export * from './core';
 export * from './lab';
 export * from './pharmacy';
 export * from './billing';
+export * from './radiology';

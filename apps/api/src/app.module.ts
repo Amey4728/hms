@@ -22,6 +22,7 @@ import { HospitalsModule } from './modules/hospitals/hospitals.module';
 import { LaboratoryModule } from './modules/laboratory/laboratory.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { PharmacyModule } from './modules/pharmacy/pharmacy.module';
+import { RadiologyModule } from './modules/radiology/radiology.module';
 import { RbacModule } from './modules/rbac/rbac.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { UsersModule } from './modules/users/users.module';
@@ -57,6 +58,7 @@ import { UsersModule } from './modules/users/users.module';
     LaboratoryModule,
     PharmacyModule,
     BillingModule,
+    RadiologyModule,
     ReportsModule,
     HealthModule,
   ],
