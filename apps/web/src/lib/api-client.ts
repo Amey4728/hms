@@ -14,6 +14,15 @@ export class ApiError extends Error {
   }
 }
 
+/** Human-readable message for an API error, expanding field-level validation details. */
+export function apiErrorMessage(error: unknown, fallback = 'Something went wrong'): string {
+  if (!(error instanceof ApiError)) return fallback;
+  if (error.details?.length) {
+    return error.details.map((d) => (d.field ? `${d.field}: ${d.message}` : d.message)).join(' · ');
+  }
+  return error.message || fallback;
+}
+
 type TokenListener = (token: string | null) => void;
 
 /**

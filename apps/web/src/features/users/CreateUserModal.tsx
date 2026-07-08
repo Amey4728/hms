@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Modal } from '@/components/Modal';
 import { Button, Field, Input } from '@/components/ui';
 import { toast } from '@/components/toast';
-import { ApiError } from '@/lib/api-client';
+import { apiErrorMessage } from '@/lib/api-client';
 import { cn } from '@/lib/cn';
 import { useCreateUser, useRoles } from './hooks';
 
@@ -38,7 +38,7 @@ export function CreateUserModal({ open, onClose }: { open: boolean; onClose: () 
           toast.success(`Created ${u.firstName} ${u.lastName}`);
           onClose();
         },
-        onError: (e) => toast.error(e instanceof ApiError ? e.message : 'Failed to create user'),
+        onError: (e) => toast.error(apiErrorMessage(e, 'Failed to create user')),
       },
     );
 
@@ -57,8 +57,8 @@ export function CreateUserModal({ open, onClose }: { open: boolean; onClose: () 
           <Input type="email" value={form.email} onChange={set('email')} />
         </Field>
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Password" required>
-            <Input type="password" value={form.password} onChange={set('password')} placeholder="Min 8, mixed" />
+          <Field label="Password" required hint="8+ chars with an uppercase, lowercase, number & symbol">
+            <Input type="password" value={form.password} onChange={set('password')} placeholder="e.g. Amey@1234" />
           </Field>
           <Field label="Phone">
             <Input value={form.phone} onChange={set('phone')} placeholder="Optional" />
