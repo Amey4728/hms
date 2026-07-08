@@ -16,6 +16,12 @@ import { RadiologyStudiesPage } from '@/features/radiology/RadiologyStudiesPage'
 import { RadiologyCataloguePage } from '@/features/radiology/RadiologyCataloguePage';
 import { ClaimsPage } from '@/features/insurance/ClaimsPage';
 import { ProvidersPage } from '@/features/insurance/ProvidersPage';
+import { EmployeesPage } from '@/features/hr/EmployeesPage';
+import { LeavePage } from '@/features/hr/LeavePage';
+import { PayrollPage } from '@/features/hr/PayrollPage';
+import { ItemsPage } from '@/features/procurement/ItemsPage';
+import { VendorsPage } from '@/features/procurement/VendorsPage';
+import { PurchaseRequestsPage } from '@/features/procurement/PurchaseRequestsPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { UsersListPage } from '@/features/users/UsersListPage';
 import { PatientsListPage } from '@/features/patients/PatientsListPage';
@@ -47,6 +53,12 @@ export const router = createBrowserRouter([
           { path: 'radiology/catalogue', element: <RadiologyCataloguePage /> },
           { path: 'insurance', element: <ClaimsPage /> },
           { path: 'insurance/providers', element: <ProvidersPage /> },
+          { path: 'hr', element: <EmployeesPage /> },
+          { path: 'hr/leave', element: <LeavePage /> },
+          { path: 'hr/payroll', element: <PayrollPage /> },
+          { path: 'inventory', element: <ItemsPage /> },
+          { path: 'inventory/vendors', element: <VendorsPage /> },
+          { path: 'inventory/purchase-requests', element: <PurchaseRequestsPage /> },
           { path: 'hospitals', element: <PlaceholderPage title="Hospitals" phase="a later phase" /> },
           { path: 'users', element: <UsersListPage /> },
         ],
