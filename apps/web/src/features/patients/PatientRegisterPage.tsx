@@ -68,7 +68,7 @@ export function PatientRegisterPage() {
       <Card className="p-6">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
           <section>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Identity
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -123,7 +123,7 @@ export function PatientRegisterPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Contact
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -148,7 +148,7 @@ export function PatientRegisterPage() {
             </div>
           </section>
 
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Link to="/patients">
               <Button type="button" variant="secondary">
                 Cancel

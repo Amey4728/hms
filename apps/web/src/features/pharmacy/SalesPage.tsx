@@ -88,11 +88,11 @@ export function SalesPage() {
         {isLoading ? (
           <PageSpinner />
         ) : (data?.data.length ?? 0) === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No sales yet.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No sales yet.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3 font-medium">Ref</th>
                   <th className="px-4 py-3 font-medium">Items</th>
@@ -102,15 +102,15 @@ export function SalesPage() {
                   <th className="px-4 py-3 text-right font-medium">Total</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {data?.data.map((s) => (
-                  <tr key={s.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{s.saleRef}</td>
-                    <td className="px-4 py-3 text-slate-600">{s.items.length}</td>
-                    <td className="px-4 py-3 text-slate-600">{formatDate(s.createdAt)}</td>
-                    <td className="px-4 py-3 text-right text-slate-600">{s.subtotal.toFixed(2)}</td>
-                    <td className="px-4 py-3 text-right text-slate-600">{s.tax.toFixed(2)}</td>
-                    <td className="px-4 py-3 text-right font-semibold text-slate-900">{s.total.toFixed(2)}</td>
+                  <tr key={s.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{s.saleRef}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{s.items.length}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{formatDate(s.createdAt)}</td>
+                    <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{s.subtotal.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{s.tax.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-right font-semibold text-slate-900 dark:text-slate-100">{s.total.toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -145,14 +145,14 @@ export function SalesPage() {
           </div>
 
           {lines.length > 0 && (
-            <div className="rounded-lg border border-slate-200">
+            <div className="rounded-lg border border-slate-200 dark:border-slate-800">
               {lines.map((l, idx) => (
-                <div key={idx} className="flex items-center justify-between border-b border-slate-100 px-3 py-2 text-sm last:border-0">
-                  <span className="text-slate-700">
+                <div key={idx} className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-3 py-2 text-sm last:border-0">
+                  <span className="text-slate-700 dark:text-slate-300">
                     {l.name} × {l.quantity}
                   </span>
                   <div className="flex items-center gap-3">
-                    <span className="text-slate-600">{(l.price * l.quantity).toFixed(2)}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{(l.price * l.quantity).toFixed(2)}</span>
                     <button onClick={() => setLines((ls) => ls.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600">
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -171,9 +171,9 @@ export function SalesPage() {
             </Field>
           </div>
 
-          <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-            <span className="text-sm text-slate-500">
-              Subtotal {subtotal.toFixed(2)} · Est. total <span className="font-semibold text-slate-800">{est.toFixed(2)}</span>
+          <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              Subtotal {subtotal.toFixed(2)} · Est. total <span className="font-semibold text-slate-800 dark:text-slate-200">{est.toFixed(2)}</span>
             </span>
             <div className="flex gap-2">
               <Button variant="secondary" onClick={() => setOpen(false)}>

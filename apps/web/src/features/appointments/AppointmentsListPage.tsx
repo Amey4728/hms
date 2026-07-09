@@ -76,7 +76,7 @@ export function AppointmentsListPage() {
       />
 
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 p-4">
           <Select
             className="max-w-xs"
             value={status}
@@ -101,11 +101,11 @@ export function AppointmentsListPage() {
             {error instanceof ApiError ? error.message : 'Failed to load'}
           </div>
         ) : rows.length === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No appointments.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No appointments.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3 font-medium">Ref</th>
                   <th className="px-4 py-3 font-medium">Patient</th>
@@ -117,22 +117,22 @@ export function AppointmentsListPage() {
                   <th className="px-4 py-3 text-right font-medium">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {rows.map((a) => (
-                  <tr key={a.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{a.appointmentRef}</td>
+                  <tr key={a.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{a.appointmentRef}</td>
                     <td className="px-4 py-3">
-                      <div className="font-medium text-slate-900">{a.patientName}</div>
-                      <div className="text-xs text-slate-400">{a.patientMrn}</div>
+                      <div className="font-medium text-slate-900 dark:text-slate-100">{a.patientName}</div>
+                      <div className="text-xs text-slate-400 dark:text-slate-500">{a.patientMrn}</div>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">Dr. {a.doctorName}</td>
-                    <td className="px-4 py-3 text-slate-600">{fmt(a.scheduledStart)}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">Dr. {a.doctorName}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{fmt(a.scheduledStart)}</td>
                     <td className="px-4 py-3">
                       <Badge tone={a.type === 'WALK_IN' ? 'warning' : 'neutral'}>
                         {titleCase(a.type)}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 font-mono text-slate-600">{a.tokenNumber ?? '—'}</td>
+                    <td className="px-4 py-3 font-mono text-slate-600 dark:text-slate-300">{a.tokenNumber ?? '—'}</td>
                     <td className="px-4 py-3">
                       <Badge tone={STATUS_TONE[a.status]}>{titleCase(a.status)}</Badge>
                     </td>
@@ -172,7 +172,7 @@ export function AppointmentsListPage() {
         )}
 
         {meta && meta.total > 0 && (
-          <div className="flex items-center justify-between border-t border-slate-100 p-4 text-sm text-slate-600">
+          <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 p-4 text-sm text-slate-600 dark:text-slate-300">
             <span>
               Page {meta.page} of {meta.totalPages} · {meta.total} total
             </span>

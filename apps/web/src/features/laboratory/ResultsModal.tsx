@@ -43,11 +43,11 @@ export function ResultsModal({
     >
       <div className="space-y-3">
         {order.items.map((i) => (
-          <div key={i.id} className="rounded-lg border border-slate-200 p-3">
+          <div key={i.id} className="rounded-lg border border-slate-200 dark:border-slate-800 p-3">
             <div className="mb-2 flex items-center justify-between">
               <div>
-                <p className="font-medium text-slate-900">{i.testName}</p>
-                <p className="text-xs text-slate-400">
+                <p className="font-medium text-slate-900 dark:text-slate-100">{i.testName}</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">
                   {i.testCode} · ref {i.referenceRange ?? '—'} {i.unit ? `(${i.unit})` : ''}
                 </p>
               </div>
@@ -58,7 +58,7 @@ export function ResultsModal({
               )}
             </div>
             {readOnly ? (
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
                 {i.resultValue ?? '—'} {i.unit ?? ''} {i.resultNotes ? `· ${i.resultNotes}` : ''}
               </p>
             ) : (
@@ -91,7 +91,7 @@ export function ResultsModal({
             )}
           </div>
         ))}
-        <div className="flex justify-between border-t border-slate-100 pt-3 text-sm text-slate-500">
+        <div className="flex justify-between border-t border-slate-100 dark:border-slate-800 pt-3 text-sm text-slate-500 dark:text-slate-400">
           <span>
             {order.resultedCount}/{order.totalCount} resulted
           </span>

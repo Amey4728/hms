@@ -62,7 +62,7 @@ export function LabOrdersPage() {
       <LabSubnav />
 
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 p-4">
           <Select className="max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">All statuses</option>
             {LAB_ORDER_STATUSES.map((s) => (
@@ -76,14 +76,14 @@ export function LabOrdersPage() {
         {isLoading ? (
           <PageSpinner />
         ) : orders.length === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">
             <FlaskConical className="mx-auto mb-2 h-6 w-6 text-slate-300" />
             No lab orders.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3 font-medium">Ref</th>
                   <th className="px-4 py-3 font-medium">Patient</th>
@@ -92,15 +92,15 @@ export function LabOrdersPage() {
                   <th className="px-4 py-3 text-right font-medium">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {orders.map((o) => (
-                  <tr key={o.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{o.orderRef}</td>
+                  <tr key={o.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{o.orderRef}</td>
                     <td className="px-4 py-3">
-                      <div className="font-medium text-slate-900">{o.patientName}</div>
-                      <div className="text-xs text-slate-400">{o.patientMrn}</div>
+                      <div className="font-medium text-slate-900 dark:text-slate-100">{o.patientName}</div>
+                      <div className="text-xs text-slate-400 dark:text-slate-500">{o.patientMrn}</div>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">
                       {o.resultedCount}/{o.totalCount} resulted
                     </td>
                     <td className="px-4 py-3">

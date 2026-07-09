@@ -56,19 +56,19 @@ export function EmployeesPage() {
       <HrSubnav />
       <Card>
         {isLoading ? <PageSpinner /> : (data?.data.length ?? 0) === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No employees.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No employees.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr><th className="px-4 py-3 font-medium">ID</th><th className="px-4 py-3 font-medium">Name</th><th className="px-4 py-3 font-medium">Designation</th><th className="px-4 py-3 font-medium">Type</th><th className="px-4 py-3 font-medium">Status</th><th className="px-4 py-3 text-right font-medium">Salary</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {data?.data.map((e) => (
-                  <tr key={e.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{e.employeeRef}</td>
-                    <td className="px-4 py-3 font-medium text-slate-900">{e.firstName} {e.lastName}</td>
-                    <td className="px-4 py-3 text-slate-600">{e.designation}{e.department ? ` · ${e.department}` : ''}</td>
+                  <tr key={e.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{e.employeeRef}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{e.firstName} {e.lastName}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{e.designation}{e.department ? ` · ${e.department}` : ''}</td>
                     <td className="px-4 py-3"><Badge tone="neutral">{titleCase(e.employmentType)}</Badge></td>
                     <td className="px-4 py-3"><Badge tone={e.status === 'ACTIVE' ? 'success' : 'neutral'}>{titleCase(e.status)}</Badge></td>
                     <td className="px-4 py-3 text-right font-medium">{e.baseSalary.toFixed(2)}</td>
@@ -102,7 +102,7 @@ export function EmployeesPage() {
             <Field label="Joined date" required><Input type="date" value={form.joinedAt} onChange={set('joinedAt')} /></Field>
             <Field label="Base salary" required><Input type="number" value={form.baseSalary} onChange={set('baseSalary')} /></Field>
           </div>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={submit} loading={create.isPending} disabled={!form.firstName || !form.lastName || !form.designation || !form.joinedAt}>Add employee</Button>
           </div>
@@ -118,7 +118,7 @@ export function EmployeesPage() {
             <Field label="End" required><Input type="date" value={leave.endDate} onChange={(e) => setLeave((l) => ({ ...l, endDate: e.target.value }))} /></Field>
           </div>
           <Field label="Reason"><Input value={leave.reason} onChange={(e) => setLeave((l) => ({ ...l, reason: e.target.value }))} /></Field>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setLeaveFor(null)}>Cancel</Button>
             <Button onClick={submitLeave} loading={requestLeave.isPending} disabled={!leave.startDate || !leave.endDate}>Request leave</Button>
           </div>

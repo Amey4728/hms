@@ -61,7 +61,7 @@ export function CreateLabOrderModal({ open, onClose }: { open: boolean; onClose:
         </Field>
         <PatientPicker value={patientId} onChange={setPatientId} required />
         <Field label="Tests" required>
-          <div className="max-h-52 space-y-1 overflow-y-auto rounded-lg border border-slate-200 p-2">
+          <div className="max-h-52 space-y-1 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-800 p-2">
             {tests.data?.map((t) => (
               <button
                 key={t.id}
@@ -69,22 +69,22 @@ export function CreateLabOrderModal({ open, onClose }: { open: boolean; onClose:
                 onClick={() => toggle(t.id)}
                 className={cn(
                   'flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm',
-                  testIds.includes(t.id) ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50',
+                  testIds.includes(t.id) ? 'bg-brand-50 text-brand-700' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50',
                 )}
               >
                 <span>
-                  {t.name} <span className="text-xs text-slate-400">· {t.code}</span>
+                  {t.name} <span className="text-xs text-slate-400 dark:text-slate-500">· {t.code}</span>
                 </span>
-                <span className="text-xs text-slate-500">{t.price.toFixed(2)}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">{t.price.toFixed(2)}</span>
               </button>
             ))}
-            {tests.data?.length === 0 && <p className="px-2 py-1 text-sm text-slate-400">Add tests to the catalogue first.</p>}
+            {tests.data?.length === 0 && <p className="px-2 py-1 text-sm text-slate-400 dark:text-slate-500">Add tests to the catalogue first.</p>}
           </div>
         </Field>
         <Field label="Notes">
           <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional" />
         </Field>
-        <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+        <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>

@@ -53,11 +53,11 @@ export function LabCataloguePage() {
         {isLoading ? (
           <PageSpinner />
         ) : (data?.data.length ?? 0) === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No tests in the catalogue.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No tests in the catalogue.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3 font-medium">Code</th>
                   <th className="px-4 py-3 font-medium">Name</th>
@@ -67,19 +67,19 @@ export function LabCataloguePage() {
                   <th className="px-4 py-3 text-right font-medium">Price</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {data?.data.map((t) => (
-                  <tr key={t.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{t.code}</td>
-                    <td className="px-4 py-3 font-medium text-slate-900">{t.name}</td>
-                    <td className="px-4 py-3 text-slate-600">{t.category ?? '—'}</td>
+                  <tr key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{t.code}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{t.name}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{t.category ?? '—'}</td>
                     <td className="px-4 py-3">
                       <Badge tone="neutral">{titleCase(t.specimenType)}</Badge>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">
                       {t.referenceRange ?? '—'} {t.unit ? `(${t.unit})` : ''}
                     </td>
-                    <td className="px-4 py-3 text-right font-medium text-slate-900">{t.price.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-right font-medium text-slate-900 dark:text-slate-100">{t.price.toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -121,7 +121,7 @@ export function LabCataloguePage() {
               <Input value={form.referenceRange} onChange={set('referenceRange')} placeholder="70-100" />
             </Field>
           </div>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setOpen(false)}>
               Cancel
             </Button>

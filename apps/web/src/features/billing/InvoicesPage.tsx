@@ -93,7 +93,7 @@ export function InvoicesPage() {
       />
 
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 p-4">
           <Select className="max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">All statuses</option>
             {INVOICE_STATUSES.map((s) => (
@@ -106,11 +106,11 @@ export function InvoicesPage() {
         {isLoading ? (
           <PageSpinner />
         ) : rows.length === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No invoices.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No invoices.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3 font-medium">Ref</th>
                   <th className="px-4 py-3 font-medium">Patient</th>
@@ -120,15 +120,15 @@ export function InvoicesPage() {
                   <th className="px-4 py-3 font-medium">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {rows.map((inv) => (
-                  <tr key={inv.id} className="cursor-pointer hover:bg-slate-50" onClick={() => setSelectedId(inv.id)}>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{inv.invoiceRef}</td>
+                  <tr key={inv.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50" onClick={() => setSelectedId(inv.id)}>
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{inv.invoiceRef}</td>
                     <td className="px-4 py-3">
-                      <div className="font-medium text-slate-900">{inv.patientName}</div>
-                      <div className="text-xs text-slate-400">{inv.patientMrn}</div>
+                      <div className="font-medium text-slate-900 dark:text-slate-100">{inv.patientName}</div>
+                      <div className="text-xs text-slate-400 dark:text-slate-500">{inv.patientMrn}</div>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{formatDate(inv.createdAt)}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{formatDate(inv.createdAt)}</td>
                     <td className="px-4 py-3 text-right font-medium">{inv.total.toFixed(2)}</td>
                     <td className="px-4 py-3 text-right text-brand-700">{inv.balance.toFixed(2)}</td>
                     <td className="px-4 py-3">
@@ -165,14 +165,14 @@ export function InvoicesPage() {
           </div>
 
           {items.length > 0 && (
-            <div className="rounded-lg border border-slate-200">
+            <div className="rounded-lg border border-slate-200 dark:border-slate-800">
               {items.map((i, idx) => (
-                <div key={idx} className="flex items-center justify-between border-b border-slate-100 px-3 py-2 text-sm last:border-0">
-                  <span className="text-slate-700">
+                <div key={idx} className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-3 py-2 text-sm last:border-0">
+                  <span className="text-slate-700 dark:text-slate-300">
                     {i.description} × {i.quantity}
                   </span>
                   <div className="flex items-center gap-3">
-                    <span className="text-slate-600">{(i.unitPrice * i.quantity).toFixed(2)}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{(i.unitPrice * i.quantity).toFixed(2)}</span>
                     <button onClick={() => setItems((it) => it.filter((_, x) => x !== idx))} className="text-red-400 hover:text-red-600">
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -191,9 +191,9 @@ export function InvoicesPage() {
             </Field>
           </div>
 
-          <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-            <span className="text-sm text-slate-500">
-              Est. total <span className="font-semibold text-slate-800">{est.toFixed(2)}</span>
+          <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              Est. total <span className="font-semibold text-slate-800 dark:text-slate-200">{est.toFixed(2)}</span>
             </span>
             <div className="flex gap-2">
               <Button variant="secondary" onClick={() => setCreateOpen(false)}>

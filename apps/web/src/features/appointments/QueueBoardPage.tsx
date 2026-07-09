@@ -69,11 +69,11 @@ export function QueueBoardPage() {
       </div>
 
       {!doctorId ? (
-        <Card className="p-8 text-center text-sm text-slate-500">Select a doctor to view the queue.</Card>
+        <Card className="p-8 text-center text-sm text-slate-500 dark:text-slate-400">Select a doctor to view the queue.</Card>
       ) : queue.isLoading ? (
         <PageSpinner />
       ) : (queue.data?.length ?? 0) === 0 ? (
-        <Card className="p-12 text-center text-sm text-slate-500">Queue is empty.</Card>
+        <Card className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">Queue is empty.</Card>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {queue.data?.map((a) => (
@@ -84,8 +84,8 @@ export function QueueBoardPage() {
                 </div>
                 <Badge tone={STATUS_TONE[a.status]}>{titleCase(a.status)}</Badge>
               </div>
-              <p className="mt-3 font-medium text-slate-900">{a.patientName}</p>
-              <p className="text-xs text-slate-400">{a.patientMrn}</p>
+              <p className="mt-3 font-medium text-slate-900 dark:text-slate-100">{a.patientName}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">{a.patientMrn}</p>
               <PermissionGate anyOf={[PERMISSIONS.APPOINTMENT_UPDATE]}>
                 <div className="mt-3 flex gap-2">
                   {nextActions(a.status).map((na) => (

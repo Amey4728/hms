@@ -141,7 +141,7 @@ export function BookAppointmentModal({
             }}
           />
           {patientTerm && !patientId && (
-            <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-slate-200">
+            <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-800">
               {patients.data?.map((p) => (
                 <button
                   key={p.id}
@@ -149,13 +149,13 @@ export function BookAppointmentModal({
                     setPatientId(p.id);
                     setPatientTerm(`${p.firstName} ${p.lastName} · ${p.mrn}`);
                   }}
-                  className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
+                  className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800/50"
                 >
-                  {p.firstName} {p.lastName} <span className="text-slate-400">· {p.mrn}</span>
+                  {p.firstName} {p.lastName} <span className="text-slate-400 dark:text-slate-500">· {p.mrn}</span>
                 </button>
               ))}
               {patients.data?.length === 0 && (
-                <p className="px-3 py-2 text-sm text-slate-400">No matches</p>
+                <p className="px-3 py-2 text-sm text-slate-400 dark:text-slate-500">No matches</p>
               )}
             </div>
           )}
@@ -199,7 +199,7 @@ export function BookAppointmentModal({
                       'rounded-lg border px-3 py-1.5 text-sm',
                       slotStart === s.start
                         ? 'border-brand-500 bg-brand-50 text-brand-700'
-                        : 'border-slate-300 hover:bg-slate-50',
+                        : 'border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50',
                     )}
                   >
                     {new Date(s.start).toISOString().slice(11, 16)}
@@ -207,7 +207,7 @@ export function BookAppointmentModal({
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-slate-400 dark:text-slate-500">
                 No free slots — add availability for this doctor/day, or pick another date.
               </p>
             )}
@@ -218,7 +218,7 @@ export function BookAppointmentModal({
           <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Optional" />
         </Field>
 
-        <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+        <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>

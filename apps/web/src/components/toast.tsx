@@ -45,10 +45,10 @@ export function Toaster() {
         <div
           key={t.id}
           className={cn(
-            'flex items-start gap-3 rounded-lg border p-3 shadow-lg',
+            'flex animate-slide-up items-start gap-3 rounded-xl border p-3.5 shadow-card backdrop-blur',
             t.tone === 'success'
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-              : 'border-red-200 bg-red-50 text-red-800',
+              ? 'border-emerald-200 bg-emerald-50/90 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200'
+              : 'border-red-200 bg-red-50/90 text-red-800 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200',
           )}
         >
           {t.tone === 'success' ? (

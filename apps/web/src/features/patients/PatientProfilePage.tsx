@@ -11,8 +11,8 @@ import type { AllergySeverity } from '@hms/shared';
 function Detail({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div>
-      <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
-      <p className="mt-0.5 text-sm font-medium text-slate-800">{value || '—'}</p>
+      <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">{label}</p>
+      <p className="mt-0.5 text-sm font-medium text-slate-800 dark:text-slate-200">{value || '—'}</p>
     </div>
   );
 }
@@ -32,10 +32,10 @@ function SectionCard({
     <Card className="p-5">
       <div className="mb-4 flex items-center gap-2">
         {icon}
-        <h3 className="font-semibold text-slate-800">{title}</h3>
+        <h3 className="font-semibold text-slate-800 dark:text-slate-200">{title}</h3>
         <Badge tone="info">{count}</Badge>
       </div>
-      {count === 0 ? <p className="text-sm text-slate-400">None recorded.</p> : children}
+      {count === 0 ? <p className="text-sm text-slate-400 dark:text-slate-500">None recorded.</p> : children}
     </Card>
   );
 }
@@ -82,7 +82,7 @@ export function PatientProfilePage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="p-5 lg:col-span-3">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-semibold text-slate-800">Demographics</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200">Demographics</h3>
             <Badge tone={patient.status === 'ACTIVE' ? 'success' : 'neutral'}>
               {titleCase(patient.status)}
             </Badge>
@@ -109,12 +109,12 @@ export function PatientProfilePage() {
         >
           <ul className="space-y-3">
             {patient.emergencyContacts.map((c) => (
-              <li key={c.id} className="rounded-lg border border-slate-100 p-3">
+              <li key={c.id} className="rounded-lg border border-slate-100 dark:border-slate-800 p-3">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium text-slate-800">{c.name}</p>
+                  <p className="font-medium text-slate-800 dark:text-slate-200">{c.name}</p>
                   {c.isPrimary && <Badge tone="success">Primary</Badge>}
                 </div>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   {c.relationship} · {c.phone}
                 </p>
               </li>
@@ -129,12 +129,12 @@ export function PatientProfilePage() {
         >
           <ul className="space-y-3">
             {patient.allergies.map((a) => (
-              <li key={a.id} className="rounded-lg border border-slate-100 p-3">
+              <li key={a.id} className="rounded-lg border border-slate-100 dark:border-slate-800 p-3">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium text-slate-800">{a.allergen}</p>
+                  <p className="font-medium text-slate-800 dark:text-slate-200">{a.allergen}</p>
                   <Badge tone={severityTone[a.severity]}>{titleCase(a.severity)}</Badge>
                 </div>
-                {a.reaction && <p className="text-sm text-slate-500">{a.reaction}</p>}
+                {a.reaction && <p className="text-sm text-slate-500 dark:text-slate-400">{a.reaction}</p>}
               </li>
             ))}
           </ul>
@@ -147,12 +147,12 @@ export function PatientProfilePage() {
         >
           <ul className="space-y-3">
             {patient.medicalHistories.map((h) => (
-              <li key={h.id} className="rounded-lg border border-slate-100 p-3">
+              <li key={h.id} className="rounded-lg border border-slate-100 dark:border-slate-800 p-3">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium text-slate-800">{h.condition}</p>
+                  <p className="font-medium text-slate-800 dark:text-slate-200">{h.condition}</p>
                   <Badge tone="neutral">{titleCase(h.status)}</Badge>
                 </div>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   {h.diagnosedAt ? `Diagnosed ${formatDate(h.diagnosedAt)}` : ''} {h.notes ?? ''}
                 </p>
               </li>

@@ -57,26 +57,26 @@ export function PurchaseRequestsPage() {
         actions={<PermissionGate anyOf={[PERMISSIONS.INVENTORY_MANAGE]}><Button onClick={() => setOpen(true)}><Plus className="h-4 w-4" /> New request</Button></PermissionGate>} />
       <InventorySubnav />
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 p-4">
           <Select className="max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">All statuses</option>
             {PURCHASE_STATUSES.map((s) => <option key={s} value={s}>{titleCase(s)}</option>)}
           </Select>
         </div>
         {isLoading ? <PageSpinner /> : rows.length === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No purchase requests.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No purchase requests.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr><th className="px-4 py-3 font-medium">Ref</th><th className="px-4 py-3 font-medium">Vendor</th><th className="px-4 py-3 font-medium">Items</th><th className="px-4 py-3 font-medium">Status</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {rows.map((pr) => (
-                  <tr key={pr.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{pr.requestRef}</td>
-                    <td className="px-4 py-3 text-slate-600">{pr.vendorName ?? '—'}</td>
-                    <td className="px-4 py-3 text-slate-600">{pr.items.length} · {pr.items.reduce((s, i) => s + i.quantity, 0)} units</td>
+                  <tr key={pr.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{pr.requestRef}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{pr.vendorName ?? '—'}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{pr.items.length} · {pr.items.reduce((s, i) => s + i.quantity, 0)} units</td>
                     <td className="px-4 py-3"><Badge tone={TONE[pr.status]}>{titleCase(pr.status)}</Badge></td>
                     <td className="px-4 py-3">
                       <PermissionGate anyOf={[PERMISSIONS.INVENTORY_MANAGE]}>
@@ -116,16 +116,16 @@ export function PurchaseRequestsPage() {
             <Button variant="secondary" onClick={addLine} disabled={!pick}><Plus className="h-4 w-4" /></Button>
           </div>
           {lines.length > 0 && (
-            <div className="rounded-lg border border-slate-200">
+            <div className="rounded-lg border border-slate-200 dark:border-slate-800">
               {lines.map((l, idx) => (
-                <div key={idx} className="flex items-center justify-between border-b border-slate-100 px-3 py-2 text-sm last:border-0">
-                  <span className="text-slate-700">{l.name} × {l.quantity}</span>
+                <div key={idx} className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-3 py-2 text-sm last:border-0">
+                  <span className="text-slate-700 dark:text-slate-300">{l.name} × {l.quantity}</span>
                   <button onClick={() => setLines((ls) => ls.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>
                 </div>
               ))}
             </div>
           )}
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={submit} loading={create.isPending} disabled={lines.length === 0}>Create request</Button>
           </div>

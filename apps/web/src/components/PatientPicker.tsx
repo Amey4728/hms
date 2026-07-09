@@ -27,7 +27,7 @@ export function PatientPicker({
         }}
       />
       {term && !value && (
-        <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-slate-200">
+        <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-800">
           {patients.data?.map((p) => (
             <button
               key={p.id}
@@ -36,12 +36,12 @@ export function PatientPicker({
                 onChange(p.id);
                 setTerm(`${p.firstName} ${p.lastName} · ${p.mrn}`);
               }}
-              className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
+              className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800/50"
             >
-              {p.firstName} {p.lastName} <span className="text-slate-400">· {p.mrn}</span>
+              {p.firstName} {p.lastName} <span className="text-slate-400 dark:text-slate-500">· {p.mrn}</span>
             </button>
           ))}
-          {patients.data?.length === 0 && <p className="px-3 py-2 text-sm text-slate-400">No matches</p>}
+          {patients.data?.length === 0 && <p className="px-3 py-2 text-sm text-slate-400 dark:text-slate-500">No matches</p>}
         </div>
       )}
     </Field>

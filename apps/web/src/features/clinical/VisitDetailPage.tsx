@@ -17,7 +17,7 @@ function Section({ title, count, action, children }: { title: string; count: num
     <Card className="p-5">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-slate-800">{title}</h3>
+          <h3 className="font-semibold text-slate-800 dark:text-slate-200">{title}</h3>
           <Badge tone="info">{count}</Badge>
         </div>
         {action}
@@ -83,21 +83,21 @@ export function VisitDetailPage() {
         {/* Overview + vitals */}
         <Card className="p-5 lg:col-span-2">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div><p className="text-xs uppercase text-slate-400">Chief complaint</p><p className="text-sm font-medium text-slate-800">{visit.chiefComplaint || '—'}</p></div>
-            <div><p className="text-xs uppercase text-slate-400">BP</p><p className="text-sm font-medium text-slate-800">{v.bloodPressure ?? '—'}</p></div>
-            <div><p className="text-xs uppercase text-slate-400">Pulse</p><p className="text-sm font-medium text-slate-800">{v.pulse ?? '—'}</p></div>
-            <div><p className="text-xs uppercase text-slate-400">Temp</p><p className="text-sm font-medium text-slate-800">{v.temperature ?? '—'}</p></div>
-            <div><p className="text-xs uppercase text-slate-400">SpO2</p><p className="text-sm font-medium text-slate-800">{v.spo2 ?? '—'}</p></div>
+            <div><p className="text-xs uppercase text-slate-400 dark:text-slate-500">Chief complaint</p><p className="text-sm font-medium text-slate-800 dark:text-slate-200">{visit.chiefComplaint || '—'}</p></div>
+            <div><p className="text-xs uppercase text-slate-400 dark:text-slate-500">BP</p><p className="text-sm font-medium text-slate-800 dark:text-slate-200">{v.bloodPressure ?? '—'}</p></div>
+            <div><p className="text-xs uppercase text-slate-400 dark:text-slate-500">Pulse</p><p className="text-sm font-medium text-slate-800 dark:text-slate-200">{v.pulse ?? '—'}</p></div>
+            <div><p className="text-xs uppercase text-slate-400 dark:text-slate-500">Temp</p><p className="text-sm font-medium text-slate-800 dark:text-slate-200">{v.temperature ?? '—'}</p></div>
+            <div><p className="text-xs uppercase text-slate-400 dark:text-slate-500">SpO2</p><p className="text-sm font-medium text-slate-800 dark:text-slate-200">{v.spo2 ?? '—'}</p></div>
           </div>
-          {visit.notes && <p className="mt-3 border-t border-slate-100 pt-3 text-sm text-slate-600">{visit.notes}</p>}
+          {visit.notes && <p className="mt-3 border-t border-slate-100 dark:border-slate-800 pt-3 text-sm text-slate-600 dark:text-slate-300">{visit.notes}</p>}
         </Card>
 
         {/* Diagnoses */}
         <Section title="Diagnoses" count={visit.diagnoses.length}>
           <ul className="mb-3 space-y-2">
             {visit.diagnoses.map((d) => (
-              <li key={d.id} className="flex items-start justify-between rounded-lg border border-slate-100 p-2 text-sm">
-                <span><span className="font-medium text-slate-800">{d.description}</span>{d.code ? ` (${d.code})` : ''} <Badge tone="neutral">{titleCase(d.type)}</Badge></span>
+              <li key={d.id} className="flex items-start justify-between rounded-lg border border-slate-100 dark:border-slate-800 p-2 text-sm">
+                <span><span className="font-medium text-slate-800 dark:text-slate-200">{d.description}</span>{d.code ? ` (${d.code})` : ''} <Badge tone="neutral">{titleCase(d.type)}</Badge></span>
                 {open && (
                   <PermissionGate anyOf={[PERMISSIONS.DIAGNOSIS_CREATE]}>
                     <button onClick={() => actions.removeDiagnosis.mutate(d.id, { onSuccess: () => toast.success('Removed'), onError })} className="text-red-400 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>
@@ -105,11 +105,11 @@ export function VisitDetailPage() {
                 )}
               </li>
             ))}
-            {visit.diagnoses.length === 0 && <p className="text-sm text-slate-400">None yet.</p>}
+            {visit.diagnoses.length === 0 && <p className="text-sm text-slate-400 dark:text-slate-500">None yet.</p>}
           </ul>
           {open && (
             <PermissionGate anyOf={[PERMISSIONS.DIAGNOSIS_CREATE]}>
-              <div className="flex items-end gap-2 border-t border-slate-100 pt-3">
+              <div className="flex items-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-3">
                 <div className="flex-1"><Field label="Diagnosis"><Input value={dx.description} onChange={(e) => setDx((s) => ({ ...s, description: e.target.value }))} placeholder="Acute URI" /></Field></div>
                 <Field label="Code"><Input className="w-24" value={dx.code} onChange={(e) => setDx((s) => ({ ...s, code: e.target.value }))} placeholder="J06.9" /></Field>
                 <Field label="Type"><Select value={dx.type} onChange={(e) => setDx((s) => ({ ...s, type: e.target.value }))}>{DIAGNOSIS_TYPES.map((t) => <option key={t} value={t}>{titleCase(t)}</option>)}</Select></Field>
@@ -124,12 +124,12 @@ export function VisitDetailPage() {
           action={open && <PermissionGate anyOf={[PERMISSIONS.PRESCRIPTION_CREATE]}><Button variant="secondary" className="px-2 py-1 text-xs" onClick={() => setRxOpen(true)}><Plus className="h-4 w-4" /> New</Button></PermissionGate>}>
           <ul className="space-y-2">
             {visit.prescriptions.map((p) => (
-              <li key={p.id} className="flex justify-between rounded-lg border border-slate-100 p-2 text-sm">
-                <span className="font-mono text-xs text-slate-600">{p.prescriptionRef}</span>
-                <span className="text-slate-500">{p.items} drug(s)</span>
+              <li key={p.id} className="flex justify-between rounded-lg border border-slate-100 dark:border-slate-800 p-2 text-sm">
+                <span className="font-mono text-xs text-slate-600 dark:text-slate-300">{p.prescriptionRef}</span>
+                <span className="text-slate-500 dark:text-slate-400">{p.items} drug(s)</span>
               </li>
             ))}
-            {visit.prescriptions.length === 0 && <p className="text-sm text-slate-400">None yet.</p>}
+            {visit.prescriptions.length === 0 && <p className="text-sm text-slate-400 dark:text-slate-500">None yet.</p>}
           </ul>
         </Section>
 
@@ -138,12 +138,12 @@ export function VisitDetailPage() {
           action={<PermissionGate anyOf={[PERMISSIONS.PATIENT_UPDATE]}><Button variant="secondary" className="px-2 py-1 text-xs" onClick={() => setPlanOpen(true)}><Plus className="h-4 w-4" /> New</Button></PermissionGate>}>
           <ul className="space-y-2">
             {visit.treatmentPlans.map((t) => (
-              <li key={t.id} className="flex justify-between rounded-lg border border-slate-100 p-2 text-sm">
-                <span className="text-slate-800">{t.title}</span>
+              <li key={t.id} className="flex justify-between rounded-lg border border-slate-100 dark:border-slate-800 p-2 text-sm">
+                <span className="text-slate-800 dark:text-slate-200">{t.title}</span>
                 <Badge tone="neutral">{titleCase(t.status)}</Badge>
               </li>
             ))}
-            {visit.treatmentPlans.length === 0 && <p className="text-sm text-slate-400">None yet.</p>}
+            {visit.treatmentPlans.length === 0 && <p className="text-sm text-slate-400 dark:text-slate-500">None yet.</p>}
           </ul>
         </Section>
       </div>
@@ -161,7 +161,7 @@ export function VisitDetailPage() {
             </div>
           ))}
           <Button variant="secondary" className="px-2 py-1 text-xs" onClick={() => setDrugs((ds) => [...ds, { ...DRUG }])}><Plus className="h-4 w-4" /> Add drug</Button>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setRxOpen(false)}>Cancel</Button>
             <Button onClick={submitRx} loading={actions.prescribe.isPending} disabled={!drugs.some((d) => d.drugName && d.dosage && d.frequency && d.duration)}>Create prescription</Button>
           </div>
@@ -173,7 +173,7 @@ export function VisitDetailPage() {
         <div className="space-y-4">
           <Field label="Title" required><Input value={plan.title} onChange={(e) => setPlan((p) => ({ ...p, title: e.target.value }))} /></Field>
           <Field label="Description"><Input value={plan.description} onChange={(e) => setPlan((p) => ({ ...p, description: e.target.value }))} /></Field>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setPlanOpen(false)}>Cancel</Button>
             <Button onClick={submitPlan} loading={actions.plan.isPending} disabled={!plan.title}>Add plan</Button>
           </div>

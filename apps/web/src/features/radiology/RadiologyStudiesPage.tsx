@@ -71,26 +71,26 @@ export function RadiologyStudiesPage() {
       <RadiologySubnav />
 
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 p-4">
           <Select className="max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">All statuses</option>
             {RADIOLOGY_STATUSES.map((s) => <option key={s} value={s}>{titleCase(s)}</option>)}
           </Select>
         </div>
         {isLoading ? <PageSpinner /> : rows.length === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500"><ScanLine className="mx-auto mb-2 h-6 w-6 text-slate-300" />No studies.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400"><ScanLine className="mx-auto mb-2 h-6 w-6 text-slate-300" />No studies.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr><th className="px-4 py-3 font-medium">Ref</th><th className="px-4 py-3 font-medium">Patient</th><th className="px-4 py-3 font-medium">Exam</th><th className="px-4 py-3 font-medium">Status</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {rows.map((s) => (
-                  <tr key={s.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{s.studyRef}</td>
-                    <td className="px-4 py-3"><div className="font-medium text-slate-900">{s.patientName}</div><div className="text-xs text-slate-400">{s.patientMrn}</div></td>
-                    <td className="px-4 py-3 text-slate-600">{s.examName} <span className="text-xs text-slate-400">· {titleCase(s.modality)}</span></td>
+                  <tr key={s.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{s.studyRef}</td>
+                    <td className="px-4 py-3"><div className="font-medium text-slate-900 dark:text-slate-100">{s.patientName}</div><div className="text-xs text-slate-400 dark:text-slate-500">{s.patientMrn}</div></td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{s.examName} <span className="text-xs text-slate-400 dark:text-slate-500">· {titleCase(s.modality)}</span></td>
                     <td className="px-4 py-3"><Badge tone={TONE[s.status]}>{titleCase(s.status)}</Badge></td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap items-center justify-end gap-1">
@@ -130,7 +130,7 @@ export function RadiologyStudiesPage() {
               {exams.data?.map((e) => <option key={e.id} value={e.id}>{e.name} · {titleCase(e.modality)}</option>)}
             </Select>
           </Field>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setCreateOpen(false)}>Cancel</Button>
             <Button onClick={submitStudy} loading={create.isPending} disabled={!hospitalId || !patientId || !examId}>Request study</Button>
           </div>
@@ -141,11 +141,11 @@ export function RadiologyStudiesPage() {
       <Modal open={!!reportFor} onClose={() => setReportFor(null)} title={`Report · ${reportFor?.studyRef ?? ''}`} width="max-w-xl">
         <div className="space-y-4">
           <Field label="Findings" required>
-            <textarea className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" rows={4} value={report.findings} onChange={(e) => setReport((r) => ({ ...r, findings: e.target.value }))} />
+            <textarea className="w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm" rows={4} value={report.findings} onChange={(e) => setReport((r) => ({ ...r, findings: e.target.value }))} />
           </Field>
           <Field label="Impression"><Input value={report.impression} onChange={(e) => setReport((r) => ({ ...r, impression: e.target.value }))} /></Field>
           <Field label="Image URL"><Input value={report.imageUrl} onChange={(e) => setReport((r) => ({ ...r, imageUrl: e.target.value }))} placeholder="https://…" /></Field>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setReportFor(null)}>Cancel</Button>
             <Button onClick={submitReport} loading={actions.report.isPending} disabled={!report.findings}>Upload report</Button>
           </div>
@@ -156,9 +156,9 @@ export function RadiologyStudiesPage() {
       <Modal open={!!viewFor} onClose={() => setViewFor(null)} title={`Report · ${viewFor?.studyRef ?? ''}`} width="max-w-xl">
         {viewFor && (
           <div className="space-y-3 text-sm">
-            <p><span className="text-slate-400">Exam:</span> {viewFor.examName}</p>
-            <div><p className="text-xs uppercase text-slate-400">Findings</p><p className="text-slate-700">{viewFor.findings}</p></div>
-            {viewFor.impression && <div><p className="text-xs uppercase text-slate-400">Impression</p><p className="text-slate-700">{viewFor.impression}</p></div>}
+            <p><span className="text-slate-400 dark:text-slate-500">Exam:</span> {viewFor.examName}</p>
+            <div><p className="text-xs uppercase text-slate-400 dark:text-slate-500">Findings</p><p className="text-slate-700 dark:text-slate-300">{viewFor.findings}</p></div>
+            {viewFor.impression && <div><p className="text-xs uppercase text-slate-400 dark:text-slate-500">Impression</p><p className="text-slate-700 dark:text-slate-300">{viewFor.impression}</p></div>}
             {viewFor.imageUrl && <a href={viewFor.imageUrl} target="_blank" rel="noreferrer" className="text-brand-600 underline">View image</a>}
           </div>
         )}

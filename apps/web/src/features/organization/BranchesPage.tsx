@@ -32,26 +32,26 @@ export function BranchesPage() {
         actions={<PermissionGate anyOf={[PERMISSIONS.BRANCH_CREATE]}><Button onClick={() => setOpen(true)} disabled={!hospitalId}><Plus className="h-4 w-4" /> New branch</Button></PermissionGate>} />
       <OrgSubnav />
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 p-4">
           <Select className="max-w-xs" value={hospitalId} onChange={(e) => setHospitalId(e.target.value)}>
             <option value="" disabled>Select hospital…</option>
             {hospitals.data?.data.map((h) => <option key={h.id} value={h.id}>{h.name}</option>)}
           </Select>
         </div>
         {isLoading ? <PageSpinner /> : (data?.data.length ?? 0) === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No branches for this hospital.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No branches for this hospital.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr><th className="px-4 py-3 font-medium">Code</th><th className="px-4 py-3 font-medium">Name</th><th className="px-4 py-3 font-medium">City</th></tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {data?.data.map((b) => (
-                  <tr key={b.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{b.code}</td>
-                    <td className="px-4 py-3 font-medium text-slate-900">{b.name}</td>
-                    <td className="px-4 py-3 text-slate-600">{b.city ?? '—'}</td>
+                  <tr key={b.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{b.code}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{b.name}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{b.city ?? '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -67,7 +67,7 @@ export function BranchesPage() {
             <Field label="City"><Input value={form.city} onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))} /></Field>
           </div>
           <Field label="Name" required><Input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} /></Field>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={submit} loading={create.isPending} disabled={!form.code || !form.name}>Add branch</Button>
           </div>

@@ -31,20 +31,20 @@ export function VendorsPage() {
       <InventorySubnav />
       <Card>
         {isLoading ? <PageSpinner /> : (data?.data.length ?? 0) === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No vendors.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No vendors.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr><th className="px-4 py-3 font-medium">Code</th><th className="px-4 py-3 font-medium">Name</th><th className="px-4 py-3 font-medium">Email</th><th className="px-4 py-3 font-medium">Phone</th></tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {data?.data.map((v) => (
-                  <tr key={v.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{v.code}</td>
-                    <td className="px-4 py-3 font-medium text-slate-900">{v.name}</td>
-                    <td className="px-4 py-3 text-slate-600">{v.contactEmail ?? '—'}</td>
-                    <td className="px-4 py-3 text-slate-600">{v.contactPhone ?? '—'}</td>
+                  <tr key={v.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{v.code}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{v.name}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{v.contactEmail ?? '—'}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{v.contactPhone ?? '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -61,7 +61,7 @@ export function VendorsPage() {
           </div>
           <Field label="Name" required><Input value={form.name} onChange={set('name')} /></Field>
           <Field label="Email"><Input type="email" value={form.contactEmail} onChange={set('contactEmail')} /></Field>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={submit} loading={create.isPending} disabled={!form.code || !form.name}>Add vendor</Button>
           </div>

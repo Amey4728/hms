@@ -76,7 +76,7 @@ export function CreateUserModal({ open, onClose }: { open: boolean; onClose: () 
                   'rounded-full border px-3 py-1 text-xs font-medium',
                   roleIds.includes(r.id)
                     ? 'border-brand-500 bg-brand-50 text-brand-700'
-                    : 'border-slate-300 text-slate-600 hover:bg-slate-50',
+                    : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50',
                 )}
               >
                 {r.displayName}
@@ -85,7 +85,7 @@ export function CreateUserModal({ open, onClose }: { open: boolean; onClose: () 
           </div>
         </Field>
 
-        <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+        <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>

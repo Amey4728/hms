@@ -57,26 +57,26 @@ export function ClaimsPage() {
       <InsuranceSubnav />
 
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 p-4">
           <Select className="max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">All statuses</option>
             {CLAIM_STATUSES.map((s) => <option key={s} value={s}>{titleCase(s)}</option>)}
           </Select>
         </div>
         {isLoading ? <PageSpinner /> : rows.length === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500"><ShieldCheck className="mx-auto mb-2 h-6 w-6 text-slate-300" />No claims.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400"><ShieldCheck className="mx-auto mb-2 h-6 w-6 text-slate-300" />No claims.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr><th className="px-4 py-3 font-medium">Ref</th><th className="px-4 py-3 font-medium">Patient</th><th className="px-4 py-3 font-medium">Provider</th><th className="px-4 py-3 text-right font-medium">Claimed</th><th className="px-4 py-3 text-right font-medium">Approved</th><th className="px-4 py-3 font-medium">Status</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {rows.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{c.claimRef}</td>
-                    <td className="px-4 py-3"><div className="font-medium text-slate-900">{c.patientName}</div><div className="text-xs text-slate-400">{c.patientMrn}</div></td>
-                    <td className="px-4 py-3 text-slate-600">{c.providerName}</td>
+                  <tr key={c.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{c.claimRef}</td>
+                    <td className="px-4 py-3"><div className="font-medium text-slate-900 dark:text-slate-100">{c.patientName}</div><div className="text-xs text-slate-400 dark:text-slate-500">{c.patientMrn}</div></td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{c.providerName}</td>
                     <td className="px-4 py-3 text-right">{c.claimedAmount.toFixed(2)}</td>
                     <td className="px-4 py-3 text-right text-emerald-600">{c.approvedAmount != null ? c.approvedAmount.toFixed(2) : '—'}</td>
                     <td className="px-4 py-3"><Badge tone={TONE[c.status]}>{titleCase(c.status)}</Badge></td>
@@ -111,7 +111,7 @@ export function ClaimsPage() {
             <Field label="Policy number" required><Input value={policyNumber} onChange={(e) => setPolicy(e.target.value)} /></Field>
             <Field label="Claimed amount" required><Input type="number" value={claimedAmount} onChange={(e) => setAmount(e.target.value)} /></Field>
           </div>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={submit} loading={create.isPending} disabled={!patientId || !providerId || !policyNumber || !claimedAmount}>Submit claim</Button>
           </div>

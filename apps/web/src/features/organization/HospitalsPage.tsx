@@ -38,19 +38,19 @@ export function HospitalsPage() {
       <OrgSubnav />
       <Card>
         {isLoading ? <PageSpinner /> : (data?.data.length ?? 0) === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No hospitals.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No hospitals.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr><th className="px-4 py-3 font-medium">Code</th><th className="px-4 py-3 font-medium">Name</th><th className="px-4 py-3 font-medium">City</th><th className="px-4 py-3 font-medium">Status</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {data?.data.map((h) => (
-                  <tr key={h.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{h.code}</td>
-                    <td className="px-4 py-3 font-medium text-slate-900">{h.name}</td>
-                    <td className="px-4 py-3 text-slate-600">{h.city ?? '—'}</td>
+                  <tr key={h.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{h.code}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{h.name}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{h.city ?? '—'}</td>
                     <td className="px-4 py-3"><Badge tone={h.isActive ? 'success' : 'neutral'}>{h.isActive ? 'Active' : 'Inactive'}</Badge></td>
                     <td className="px-4 py-3 text-right">
                       <PermissionGate anyOf={[PERMISSIONS.HOSPITAL_DELETE]}>
@@ -76,7 +76,7 @@ export function HospitalsPage() {
             <Field label="Email"><Input type="email" value={form.email} onChange={set('email')} /></Field>
             <Field label="Phone"><Input value={form.phone} onChange={set('phone')} /></Field>
           </div>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={submit} loading={create.isPending} disabled={!form.code || !form.name}>Add hospital</Button>
           </div>

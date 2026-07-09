@@ -48,7 +48,7 @@ export function VisitsPage() {
         actions={<PermissionGate anyOf={[PERMISSIONS.PATIENT_UPDATE]}><Button onClick={() => setOpen(true)}><Plus className="h-4 w-4" /> New visit</Button></PermissionGate>} />
 
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 p-4">
           <Select className="max-w-xs" value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">All statuses</option>
             <option value="OPEN">Open</option>
@@ -56,21 +56,21 @@ export function VisitsPage() {
           </Select>
         </div>
         {isLoading ? <PageSpinner /> : rows.length === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500"><Stethoscope className="mx-auto mb-2 h-6 w-6 text-slate-300" />No visits.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400"><Stethoscope className="mx-auto mb-2 h-6 w-6 text-slate-300" />No visits.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr><th className="px-4 py-3 font-medium">Ref</th><th className="px-4 py-3 font-medium">Patient</th><th className="px-4 py-3 font-medium">Type</th><th className="px-4 py-3 font-medium">Date</th><th className="px-4 py-3 font-medium">Dx / Rx</th><th className="px-4 py-3 font-medium">Status</th><th className="px-4 py-3 text-right font-medium">Actions</th></tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {rows.map((v) => (
-                  <tr key={v.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{v.visitRef}</td>
-                    <td className="px-4 py-3"><div className="font-medium text-slate-900">{v.patientName}</div><div className="text-xs text-slate-400">{v.patientMrn}</div></td>
-                    <td className="px-4 py-3 text-slate-600">{v.visitType}</td>
-                    <td className="px-4 py-3 text-slate-600">{formatDate(v.visitDate)}</td>
-                    <td className="px-4 py-3 text-slate-600">{v.diagnoses.length} / {v.prescriptions.length}</td>
+                  <tr key={v.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{v.visitRef}</td>
+                    <td className="px-4 py-3"><div className="font-medium text-slate-900 dark:text-slate-100">{v.patientName}</div><div className="text-xs text-slate-400 dark:text-slate-500">{v.patientMrn}</div></td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{v.visitType}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{formatDate(v.visitDate)}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{v.diagnoses.length} / {v.prescriptions.length}</td>
                     <td className="px-4 py-3"><Badge tone={v.status === 'OPEN' ? 'info' : 'neutral'}>{titleCase(v.status)}</Badge></td>
                     <td className="px-4 py-3 text-right">
                       <Link to={`/visits/${v.id}`}><Button variant="ghost" className="px-2 py-1"><Eye className="h-4 w-4" /></Button></Link>
@@ -92,7 +92,7 @@ export function VisitsPage() {
           </div>
           <Field label="Notes"><Input value={notes} onChange={(e) => setNotes(e.target.value)} /></Field>
           <div>
-            <p className="mb-1 text-xs font-semibold uppercase text-slate-400">Vitals (optional)</p>
+            <p className="mb-1 text-xs font-semibold uppercase text-slate-400 dark:text-slate-500">Vitals (optional)</p>
             <div className="grid grid-cols-4 gap-2">
               <Input placeholder="BP" value={vitals.bloodPressure} onChange={(e) => setVitals((v) => ({ ...v, bloodPressure: e.target.value }))} />
               <Input placeholder="Pulse" type="number" value={vitals.pulse} onChange={(e) => setVitals((v) => ({ ...v, pulse: e.target.value }))} />
@@ -100,7 +100,7 @@ export function VisitsPage() {
               <Input placeholder="SpO2 %" type="number" value={vitals.spo2} onChange={(e) => setVitals((v) => ({ ...v, spo2: e.target.value }))} />
             </div>
           </div>
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={submit} loading={create.isPending} disabled={!patientId}>Open visit</Button>
           </div>

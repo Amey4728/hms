@@ -68,9 +68,9 @@ export function UsersListPage() {
       />
 
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 p-4">
           <div className="relative max-w-sm">
-            <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400 dark:text-slate-500" />
             <Input className="pl-9" placeholder="Search name or email…" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
           </div>
         </div>
@@ -82,11 +82,11 @@ export function UsersListPage() {
             {error instanceof ApiError ? error.message : 'Failed to load'}
           </div>
         ) : rows.length === 0 ? (
-          <div className="p-12 text-center text-sm text-slate-500">No users found.</div>
+          <div className="p-12 text-center text-sm text-slate-500 dark:text-slate-400">No users found.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3 font-medium">Name</th>
                   <th className="px-4 py-3 font-medium">Email</th>
@@ -95,13 +95,13 @@ export function UsersListPage() {
                   <th className="px-4 py-3 text-right font-medium">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {rows.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium text-slate-900">
+                  <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">
                       {u.firstName} {u.lastName}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{u.email}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{u.email}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">
                         {u.roles.map((r) => (
@@ -150,7 +150,7 @@ export function UsersListPage() {
         )}
 
         {meta && meta.total > 0 && (
-          <div className="flex items-center justify-between border-t border-slate-100 p-4 text-sm text-slate-600">
+          <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 p-4 text-sm text-slate-600 dark:text-slate-300">
             <span>
               Page {meta.page} of {meta.totalPages} · {meta.total} total
             </span>
